@@ -93,14 +93,6 @@ class BudgetTable extends StatelessWidget {
       ],
       rows: budgetItems.map((item) {
         return DataRow(
-          color: WidgetStateProperty.resolveWith<Color?>(
-            (Set<WidgetState> states) {
-              if (states.contains(WidgetState.hovered)) {
-                return Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5);
-              }
-              return null;
-            },
-          ),
           cells: [
             DataCell(
               Padding(
