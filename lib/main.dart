@@ -1,7 +1,7 @@
 import 'package:budget_management_app/providers/budget_provider.dart';
 import 'package:budget_management_app/providers/theme_provider.dart';
 import 'package:budget_management_app/providers/year_provider.dart';
-import 'package:budget_management_app/screens/dashboard_screen.dart';
+import 'package:budget_management_app/screens/main_layout_screen.dart';
 import 'package:budget_management_app/screens/year_selection_screen.dart';
 import 'package:budget_management_app/services/notification_service.dart';
 import 'package:budget_management_app/theme/theme.dart';
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         builder: (context, yearProvider, child) {
           Widget initialScreen;
           if (yearProvider.isYearSet()) {
-            initialScreen = const DashboardScreen();
+            initialScreen = const MainLayoutScreen();
           } else {
             initialScreen = const YearSelectionScreen();
           }

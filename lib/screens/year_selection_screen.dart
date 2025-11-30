@@ -1,4 +1,5 @@
 import 'package:budget_management_app/providers/year_provider.dart';
+import 'package:budget_management_app/screens/main_layout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -113,6 +114,13 @@ class _YearSelectionScreenState extends State<YearSelectionScreen> {
                             final year = int.parse(_yearController.text);
                             Provider.of<YearProvider>(context, listen: false)
                                 .setCurrentYear(year);
+
+                            // Navigate back to main layout after setting year
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (context) => const MainLayoutScreen(),
+                              ),
+                            );
                           }
                         },
                         style: FilledButton.styleFrom(
