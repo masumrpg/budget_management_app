@@ -15,6 +15,8 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  _DashboardScreenState();
+
   final _searchController = TextEditingController();
 
   @override
@@ -22,34 +24,45 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Budget Management 2025'),
+        elevation: 0, // For a flatter, cleaner look
         actions: [
-          SizedBox(
-            width: 200,
+          Expanded(
+            // Make search bar responsive
             child: TextField(
               controller: _searchController,
               decoration: const InputDecoration(
+                // Rely on InputDecorationTheme
                 hintText: 'Search...',
                 prefixIcon: Icon(Icons.search),
               ),
               onChanged: (value) {
-                Provider.of<BudgetProvider>(context, listen: false).setSearchQuery(value);
+                Provider.of<BudgetProvider>(
+                  context,
+                  listen: false,
+                ).setSearchQuery(value);
               },
             ),
           ),
           IconButton(
             icon: const Icon(Icons.notifications),
             onPressed: () {
-              NotificationService.showNotification('Test Notification', 'This is a test notification.');
+              NotificationService.showNotification(
+                'Test Notification',
+                'This is a test notification.',
+              );
             },
           ),
           IconButton(
             icon: const Icon(Icons.download),
             onPressed: () async {
-              final budgetProvider =
-                  Provider.of<BudgetProvider>(context, listen: false);
+              final budgetProvider = Provider.of<BudgetProvider>(
+                context,
+                listen: false,
+              );
               final messenger = ScaffoldMessenger.of(context);
-              final path =
-                  await ExportService.exportToExcel(budgetProvider.items);
+              final path = await ExportService.exportToExcel(
+                budgetProvider.items,
+              );
               if (!mounted) return;
               if (path != null) {
                 messenger.showSnackBar(
@@ -58,27 +71,40 @@ class _DashboardScreenState extends State<DashboardScreen> {
               }
             },
           ),
-          Consumer<ThemeProvider>(
-            builder: (context, themeProvider, child) {
-              return Switch(
-                value: themeProvider.themeMode == ThemeMode.dark,
-                onChanged: (value) {
-                  themeProvider.toggleTheme(value);
-                },
-              );
-            },
+          Padding(
+            // Add padding around the switch for better spacing
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Consumer<ThemeProvider>(
+              builder: (context, themeProvider, child) {
+                return Switch(
+                  value: themeProvider.themeMode == ThemeMode.dark,
+                  onChanged: (value) {
+                    themeProvider.toggleTheme(value);
+                  },
+                );
+              },
+            ),
           ),
         ],
       ),
-      body: Consumer<BudgetProvider>(
-        builder: (context, budgetProvider, child) {
-          if (budgetProvider.filteredItems.isEmpty) {
-            return const Center(
-              child: Text('No items found.'),
+      body: Padding(
+        // Add padding to the body
+        padding: const EdgeInsets.all(16.0),
+        child: Consumer<BudgetProvider>(
+          builder: (context, budgetProvider, child) {
+            if (budgetProvider.filteredItems.isEmpty) {
+              return const Center(child: Text('No items found.'));
+            }
+            return Card(
+              // Wrap BudgetTable in a Card for lifted look
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: BudgetTable(budgetItems: budgetProvider.filteredItems),
             );
-          }
-          return BudgetTable(budgetItems: budgetProvider.filteredItems);
-        },
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

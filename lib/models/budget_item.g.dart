@@ -23,11 +23,10 @@ class BudgetItemAdapter extends TypeAdapter<BudgetItem> {
       yearlyBudget: fields[3] as double,
       frequency: fields[4] as int,
       activeMonths: (fields[5] as List).cast<int>(),
-      monthlyWithdrawals: (fields[6] as Map).cast<int, double>(),
       createdAt: fields[7] as DateTime?,
       lastUpdated: fields[8] as DateTime?,
       notes: fields[9] as String?,
-    );
+    )..monthlyWithdrawals = (fields[6] as Map).cast<int, double>();
   }
 
   @override

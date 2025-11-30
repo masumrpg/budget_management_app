@@ -23,7 +23,18 @@ class AddItemDialogState extends State<AddItemDialog> {
   int _currentFrequency = 0;
 
   final List<String> _monthNames = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
 
   @override
@@ -107,7 +118,9 @@ class AddItemDialogState extends State<AddItemDialog> {
               ),
               TextFormField(
                 controller: _frequencyController,
-                decoration: const InputDecoration(labelText: 'Frequency (times a year)'),
+                decoration: const InputDecoration(
+                  labelText: 'Frequency (times a year)',
+                ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 validator: (value) {
@@ -139,7 +152,11 @@ class AddItemDialogState extends State<AddItemDialog> {
                             } else {
                               // Optionally show a message that max selections reached
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('You can only select $_currentFrequency months.')),
+                                SnackBar(
+                                  content: Text(
+                                    'You can only select $_currentFrequency months.',
+                                  ),
+                                ),
                               );
                             }
                           } else {
@@ -155,7 +172,10 @@ class AddItemDialogState extends State<AddItemDialog> {
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
                       'Please select exactly $_currentFrequency months.',
-                      style: const TextStyle(color: Colors.red, fontSize: 12),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
               ],
@@ -168,7 +188,8 @@ class AddItemDialogState extends State<AddItemDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: const Text('Cancel'),
         ),
-        ElevatedButton(
+        FilledButton(
+          // Use FilledButton for a modern look
           onPressed: _saveItem,
           child: const Text('Save'),
         ),
@@ -181,7 +202,9 @@ class AddItemDialogState extends State<AddItemDialog> {
       if (_selectedMonths.length != _currentFrequency) {
         // Show an error for month selection
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please select exactly $_currentFrequency months.')),
+          SnackBar(
+            content: Text('Please select exactly $_currentFrequency months.'),
+          ),
         );
         return;
       }
@@ -192,10 +215,14 @@ class AddItemDialogState extends State<AddItemDialog> {
         picName: _picNameController.text,
         yearlyBudget: double.parse(_yearlyBudgetController.text),
         frequency: _currentFrequency,
-        activeMonths: _selectedMonths.toList()..sort(), // Ensure sorted for consistency
+        activeMonths: _selectedMonths.toList()
+          ..sort(), // Ensure sorted for consistency
       );
 
-      Provider.of<BudgetProvider>(context, listen: false).addBudgetItem(newItem);
+      Provider.of<BudgetProvider>(
+        context,
+        listen: false,
+      ).addBudgetItem(newItem);
       Navigator.of(context).pop();
     }
   }

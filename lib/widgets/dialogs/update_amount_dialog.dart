@@ -7,7 +7,11 @@ class UpdateAmountDialog extends StatefulWidget {
   final BudgetItem item;
   final int monthIndex;
 
-  const UpdateAmountDialog({super.key, required this.item, required this.monthIndex});
+  const UpdateAmountDialog({
+    super.key,
+    required this.item,
+    required this.monthIndex,
+  });
 
   @override
   UpdateAmountDialogState createState() => UpdateAmountDialogState();
@@ -20,7 +24,8 @@ class UpdateAmountDialogState extends State<UpdateAmountDialog> {
   @override
   void initState() {
     super.initState();
-    _amountController.text = widget.item.monthlyWithdrawals[widget.monthIndex]?.toString() ?? '';
+    _amountController.text =
+        widget.item.monthlyWithdrawals[widget.monthIndex]?.toString() ?? '';
   }
 
   @override
@@ -49,7 +54,8 @@ class UpdateAmountDialogState extends State<UpdateAmountDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: const Text('Cancel'),
         ),
-        ElevatedButton(
+        FilledButton(
+          // Use FilledButton for a modern look
           onPressed: _updateAmount,
           child: const Text('Save'),
         ),
@@ -63,7 +69,10 @@ class UpdateAmountDialogState extends State<UpdateAmountDialog> {
       final updatedItem = widget.item;
       updatedItem.monthlyWithdrawals[widget.monthIndex] = amount;
 
-      Provider.of<BudgetProvider>(context, listen: false).updateBudgetItem(updatedItem);
+      Provider.of<BudgetProvider>(
+        context,
+        listen: false,
+      ).updateBudgetItem(updatedItem);
       Navigator.of(context).pop();
     }
   }

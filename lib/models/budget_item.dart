@@ -23,7 +23,7 @@ class BudgetItem extends HiveObject {
   List<int> activeMonths;
 
   @HiveField(6)
-  Map<int, double> monthlyWithdrawals;
+  Map<int, double> monthlyWithdrawals = {};
 
   @HiveField(7)
   DateTime createdAt;
@@ -41,7 +41,6 @@ class BudgetItem extends HiveObject {
     required this.yearlyBudget,
     required this.frequency,
     required this.activeMonths,
-    this.monthlyWithdrawals = const {},
     DateTime? createdAt,
     this.lastUpdated,
     this.notes,
