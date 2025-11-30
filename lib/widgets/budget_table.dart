@@ -14,10 +14,10 @@ class BudgetTable extends StatelessWidget {
   String _formatAmount(double amount) {
     if (amount >= 10000000) {
       // If amount is 10 Million or more
-      return '${(amount / 1000000).toStringAsFixed(0)} Jt';
+      return 'Rp ${(amount / 1000000).toStringAsFixed(0)} Jt';
     } else {
       final currencyFormat = NumberFormat.currency(
-        locale: 'en_US', // Use en_US for dot separator
+        locale: 'id_ID', // Use id_ID for dot separator
         symbol: 'Rp ',
         decimalDigits: 0, // No decimal digits for cleaner look
       );
@@ -119,7 +119,7 @@ class BudgetTable extends StatelessWidget {
     final double amount = item.monthlyWithdrawals[monthIndex] ?? 0;
     final colorScheme = Theme.of(context).colorScheme;
     final currencyFormat = NumberFormat.currency(
-      locale: 'en_US', // Use en_US for dot separator
+      locale: 'id_ID', // Use id_ID for dot separator
       symbol: 'Rp ',
       decimalDigits: 0,
     );
