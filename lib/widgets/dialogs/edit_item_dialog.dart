@@ -1,0 +1,189 @@
+import 'package:budget_management_app/models/budget_item.dart';
+import 'package:budget_management_app/providers/budget_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+
+class EditItemDialog extends StatefulWidget {
+  final BudgetItem item;
+
+  const EditItemDialog({
+    super.key,
+    required this.item,
+  });
+
+  @override
+  EditItemDialogState createState() => EditItemDialogState();
+}
+
+class EditItemDialogState extends State<EditItemDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _itemNameController;
+  late final TextEditingController _picNameController;
+  late final TextEditingController _yearlyBudgetController;
+
+  @override
+  void initState() {
+    super.initState();
+    _itemNameController = TextEditingController(text: widget.item.itemName);
+    _picNameController = TextEditingController(text: widget.item.picName);
+    _yearlyBudgetController = TextEditingController(
+      text: widget.item.yearlyBudget.toStringAsFixed(0),
+    );
+  }
+
+  @override
+  void dispose() {
+    _itemNameController.dispose();
+    _picNameController.dispose();
+    _yearlyBudgetController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Edit Budget Item',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Update the item details below',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
+      content: SizedBox(
+        width: 450,
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  controller: _itemNameController,
+                  decoration: InputDecoration(
+                    labelText: 'Item Name',
+                    hintText: 'Enter item name...',
+                    border: const OutlineInputBorder(),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an item name';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _picNameController,
+                  decoration: InputDecoration(
+                    labelText: 'Person in Charge (PIC)',
+                    hintText: 'Enter PIC name...',
+                    border: const OutlineInputBorder(),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a PIC name';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _yearlyBudgetController,
+                  decoration: InputDecoration(
+                    labelText: 'Yearly Budget',
+                    hintText: 'Enter amount...',
+                    prefixText: 'Rp ',
+                    border: const OutlineInputBorder(),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                  ),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a yearly budget';
+                    }
+                    if (double.tryParse(value) == null) {
+                      return 'Please enter a valid number';
+                    }
+                    
+                    final budget = double.parse(value);
+                    final formatter = NumberFormat('#,##0', 'id_ID');
+                    
+                    // Check if the budget is less than the total used amount
+                    if (budget < widget.item.totalUsed) {
+                      return 'Yearly budget cannot be less than total used amount (${formatter.format(widget.item.totalUsed)})';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: _updateItem,
+          child: const Text('Update Item'),
+        ),
+      ],
+    );
+  }
+
+  void _updateItem() {
+    if (_formKey.currentState!.validate()) {
+      final updatedItem = BudgetItem(
+        id: widget.item.id,
+        itemName: _itemNameController.text,
+        picName: _picNameController.text,
+        yearlyBudget: double.parse(_yearlyBudgetController.text),
+        frequency: widget.item.frequency,
+        activeMonths: widget.item.activeMonths,
+        createdAt: widget.item.createdAt,
+        lastUpdated: DateTime.now(),
+        notes: widget.item.notes,
+      );
+      
+      // Preserve the existing monthly withdrawals
+      updatedItem.monthlyWithdrawals.addAll(widget.item.monthlyWithdrawals);
+
+      Provider.of<BudgetProvider>(
+        context,
+        listen: false,
+      ).updateBudgetItem(updatedItem);
+      
+      Navigator.of(context).pop();
+    }
+  }
+}

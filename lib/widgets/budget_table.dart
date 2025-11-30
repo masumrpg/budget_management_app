@@ -1,6 +1,7 @@
 import 'package:budget_management_app/models/budget_item.dart';
 import 'package:budget_management_app/providers/budget_provider.dart';
 import 'package:budget_management_app/widgets/dialogs/update_amount_dialog.dart';
+import 'package:budget_management_app/widgets/dialogs/edit_item_dialog.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -165,7 +166,10 @@ class BudgetTable extends StatelessWidget {
                       child: IconButton(
                         icon: const Icon(Icons.edit_outlined),
                         onPressed: () {
-                          // Edit functionality can be added here if needed
+                          showDialog(
+                            context: context,
+                            builder: (context) => EditItemDialog(item: item),
+                          );
                         },
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                         splashRadius: 20,
