@@ -15,8 +15,6 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  _DashboardScreenState();
-
   final _searchController = TextEditingController();
 
   @override
@@ -24,16 +22,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Budget Management 2025'),
-        elevation: 0, // For a flatter, cleaner look
+        elevation: 1,
         actions: [
-          Expanded(
-            // Make search bar responsive
+          Container(
+            width: 250,
+            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            ),
             child: TextField(
               controller: _searchController,
               decoration: const InputDecoration(
-                // Rely on InputDecorationTheme
-                hintText: 'Search...',
+                hintText: 'Search items or PIC...',
                 prefixIcon: Icon(Icons.search),
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               ),
               onChanged: (value) {
                 Provider.of<BudgetProvider>(
@@ -44,16 +48,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.notifications),
+            icon: const Icon(Icons.notifications_outlined),
             onPressed: () {
               NotificationService.showNotification(
                 'Test Notification',
                 'This is a test notification.',
               );
             },
+            tooltip: 'Notifications',
           ),
           IconButton(
-            icon: const Icon(Icons.download),
+            icon: const Icon(Icons.file_download_outlined),
             onPressed: () async {
               final budgetProvider = Provider.of<BudgetProvider>(
                 context,
@@ -70,51 +75,85 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 );
               }
             },
+            tooltip: 'Export to Excel',
           ),
-          Padding(
-            // Add padding around the switch for better spacing
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Consumer<ThemeProvider>(
-              builder: (context, themeProvider, child) {
-                return Switch(
-                  value: themeProvider.themeMode == ThemeMode.dark,
-                  onChanged: (value) {
-                    themeProvider.toggleTheme(value);
-                  },
-                );
-              },
-            ),
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
+              return IconButton(
+                icon: Icon(
+                  themeProvider.themeMode == ThemeMode.dark
+                    ? Icons.dark_mode_outlined
+                    : Icons.light_mode_outlined,
+                ),
+                onPressed: () {
+                  themeProvider.toggleTheme(themeProvider.themeMode != ThemeMode.dark);
+                },
+                tooltip: themeProvider.themeMode == ThemeMode.dark
+                  ? 'Switch to Light Mode'
+                  : 'Switch to Dark Mode',
+              );
+            },
           ),
         ],
       ),
-      body: Padding(
-        // Add padding to the body
+      body: Container(
         padding: const EdgeInsets.all(16.0),
         child: Consumer<BudgetProvider>(
           builder: (context, budgetProvider, child) {
             if (budgetProvider.filteredItems.isEmpty) {
-              return const Center(child: Text('No items found.'));
+              return const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.sentiment_dissatisfied_outlined,
+                      size: 64,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      'No items found',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Try adjusting your search',
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              );
             }
             return Card(
-              // Wrap BudgetTable in a Card for lifted look
-              elevation: 4,
+              elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(
+                  color: Theme.of(context).dividerColor,
+                  width: 0.5,
+                ),
               ),
               child: BudgetTable(budgetItems: budgetProvider.filteredItems),
             );
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           showDialog(
             context: context,
             builder: (context) => const AddItemDialog(),
           );
         },
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
+        label: const Text('Add Item'),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

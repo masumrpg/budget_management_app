@@ -66,45 +66,94 @@ class UpdateAmountDialogState extends State<UpdateAmountDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Update Amount for ${widget.item.itemName}'),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Month: ${_monthNames[widget.monthIndex]}'),
-            const SizedBox(height: 8),
-            Text('Remaining budget: $_formattedRemaining'),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _amountController,
-              decoration: const InputDecoration(
-                labelText: 'Amount',
-                prefixText: 'Rp ',
-              ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                final inputAmount = double.tryParse(value) ?? 0;
-                _updateRemainingDisplay(inputAmount);
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter an amount';
-                }
-                if (double.tryParse(value) == null) {
-                  return 'Please enter a valid number';
-                }
-
-                final inputAmount = double.parse(value);
-                final newRemaining = widget.item.yearlyBudget - (widget.item.totalUsed + (inputAmount - (widget.item.monthlyWithdrawals[widget.monthIndex] ?? 0)));
-                if (newRemaining < 0) {
-                  return 'Amount exceeds remaining budget';
-                }
-                return null;
-              },
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Update Amount for ${widget.item.itemName}',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Month: ${_monthNames[widget.monthIndex]}',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
-          ],
+          ),
+        ],
+      ),
+      content: SizedBox(
+        width: 400,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Remaining Budget',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      _formattedRemaining,
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _amountController,
+                decoration: InputDecoration(
+                  labelText: 'Amount',
+                  hintText: 'Enter amount...',
+                  prefixText: 'Rp ',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                ),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  final inputAmount = double.tryParse(value) ?? 0;
+                  _updateRemainingDisplay(inputAmount);
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter an amount';
+                  }
+                  if (double.tryParse(value) == null) {
+                    return 'Please enter a valid number';
+                  }
+
+                  final inputAmount = double.parse(value);
+                  final newRemaining = widget.item.yearlyBudget - (widget.item.totalUsed + (inputAmount - (widget.item.monthlyWithdrawals[widget.monthIndex] ?? 0)));
+                  if (newRemaining < 0) {
+                    return 'Amount exceeds remaining budget';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
         ),
       ),
       actions: [
@@ -113,7 +162,6 @@ class UpdateAmountDialogState extends State<UpdateAmountDialog> {
           child: const Text('Cancel'),
         ),
         FilledButton(
-          // Use FilledButton for a modern look
           onPressed: _updateAmount,
           child: const Text('Save'),
         ),

@@ -34,37 +34,99 @@ class BudgetTable extends StatelessWidget {
       horizontalMargin: 12,
       minWidth: 2000,
       fixedLeftColumns: 2,
+      headingRowHeight: 50,
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Color(0xFFE0E0E0),
+            width: 1.0,
+          ),
+        ),
+      ),
+      headingRowDecoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      ),
       columns: [
-        const DataColumn2(label: Text('Item Name'), size: ColumnSize.L),
-        const DataColumn2(label: Text('PIC')),
-        const DataColumn2(label: Text('Pagu'), numeric: true),
+        const DataColumn2(
+          label: Text(
+            'Item Name',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+          size: ColumnSize.L,
+        ),
+        const DataColumn2(
+          label: Text(
+            'PIC',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+        ),
+        DataColumn2(
+          label: Text(
+            'Pagu',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+          numeric: true,
+        ),
         ...List.generate(
           12,
-          (index) =>
-              DataColumn2(label: Text(_monthNames[index]), numeric: true),
+          (index) => DataColumn2(
+            label: Text(
+              _monthNames[index],
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            numeric: true,
+          ),
         ),
-        const DataColumn2(label: Text('Sisa'), numeric: true),
-        const DataColumn2(label: Text('Actions')),
+        DataColumn2(
+          label: Text(
+            'Sisa',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+          numeric: true,
+        ),
+        const DataColumn2(
+          label: Text(
+            'Actions',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+        ),
       ],
       rows: budgetItems.map((item) {
         return DataRow(
+          color: WidgetStateProperty.resolveWith<Color?>(
+            (Set<WidgetState> states) {
+              if (states.contains(WidgetState.hovered)) {
+                return Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5);
+              }
+              return null;
+            },
+          ),
           cells: [
             DataCell(
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(item.itemName),
+                child: Text(
+                  item.itemName,
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                ),
               ),
             ),
             DataCell(
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(item.picName),
+                child: Text(
+                  item.picName,
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                ),
               ),
             ),
             DataCell(
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(_formatAmount(item.yearlyBudget)),
+                child: Text(
+                  _formatAmount(item.yearlyBudget),
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                ),
               ),
             ),
             ...List.generate(12, (monthIndex) {
@@ -89,18 +151,42 @@ class BudgetTable extends StatelessWidget {
             DataCell(
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(_formatAmount(item.remaining)),
+                child: Text(
+                  _formatAmount(item.remaining),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: item.remaining < 0
+                      ? Theme.of(context).colorScheme.error
+                      : Theme.of(context).colorScheme.primary,
+                  ),
+                ),
               ),
             ),
             DataCell(
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
                 child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    IconButton(icon: const Icon(Icons.edit), onPressed: () {}),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () => _showDeleteConfirmation(context, item),
+                    Tooltip(
+                      message: 'Edit Item',
+                      child: IconButton(
+                        icon: const Icon(Icons.edit_outlined),
+                        onPressed: () {
+                          // Edit functionality can be added here if needed
+                        },
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        splashRadius: 20,
+                      ),
+                    ),
+                    Tooltip(
+                      message: 'Delete Item',
+                      child: IconButton(
+                        icon: const Icon(Icons.delete_outline),
+                        onPressed: () => _showDeleteConfirmation(context, item),
+                        color: Theme.of(context).colorScheme.error,
+                        splashRadius: 20,
+                      ),
                     ),
                   ],
                 ),
