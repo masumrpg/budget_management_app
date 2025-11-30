@@ -186,6 +186,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'add_budget_item_fab', // Unique hero tag to prevent conflicts
         onPressed: () {
           showDialog(
             context: context,
