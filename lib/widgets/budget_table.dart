@@ -71,13 +71,13 @@ class BudgetTable extends StatelessWidget {
     Widget cellContent;
 
     if (!isActive) {
-      cellColor = Colors.grey.withOpacity(0.2);
+      cellColor = Colors.grey.withAlpha(51);
       cellContent = const Text('-', textAlign: TextAlign.center);
     } else if (amount > 0) {
-      cellColor = Colors.green.withOpacity(0.2);
+      cellColor = Colors.green.withAlpha(51);
       cellContent = Text(currencyFormat.format(amount));
     } else {
-      cellColor = Colors.red.withOpacity(0.2);
+      cellColor = Colors.red.withAlpha(51);
       cellContent = const Text('Input', style: TextStyle(color: Colors.red));
     }
 

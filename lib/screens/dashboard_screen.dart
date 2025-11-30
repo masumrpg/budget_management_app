@@ -45,10 +45,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
           IconButton(
             icon: const Icon(Icons.download),
             onPressed: () async {
-              final budgetProvider = Provider.of<BudgetProvider>(context, listen: false);
-              final path = await ExportService.exportToExcel(budgetProvider.items);
-              if (path != null && mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
+              final budgetProvider =
+                  Provider.of<BudgetProvider>(context, listen: false);
+              final messenger = ScaffoldMessenger.of(context);
+              final path =
+                  await ExportService.exportToExcel(budgetProvider.items);
+              if (!mounted) return;
+              if (path != null) {
+                messenger.showSnackBar(
                   SnackBar(content: Text('Exported to $path')),
                 );
               }

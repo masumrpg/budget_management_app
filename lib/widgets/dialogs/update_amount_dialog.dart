@@ -10,10 +10,10 @@ class UpdateAmountDialog extends StatefulWidget {
   const UpdateAmountDialog({super.key, required this.item, required this.monthIndex});
 
   @override
-  _UpdateAmountDialogState createState() => _UpdateAmountDialogState();
+  UpdateAmountDialogState createState() => UpdateAmountDialogState();
 }
 
-class _UpdateAmountDialogState extends State<UpdateAmountDialog> {
+class UpdateAmountDialogState extends State<UpdateAmountDialog> {
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
 
