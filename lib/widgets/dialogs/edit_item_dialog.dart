@@ -170,6 +170,7 @@ class EditItemDialogState extends State<EditItemDialog> {
         yearlyBudget: double.parse(_yearlyBudgetController.text),
         frequency: widget.item.frequency,
         activeMonths: widget.item.activeMonths,
+        year: widget.item.year ?? DateTime.now().year, // Use current year if item year is null
         createdAt: widget.item.createdAt,
         lastUpdated: DateTime.now(),
         notes: widget.item.notes,

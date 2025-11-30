@@ -23,6 +23,7 @@ class BudgetItemAdapter extends TypeAdapter<BudgetItem> {
       yearlyBudget: fields[3] as double,
       frequency: fields[4] as int,
       activeMonths: (fields[5] as List).cast<int>(),
+      year: fields[10] as int?,
       createdAt: fields[7] as DateTime?,
       lastUpdated: fields[8] as DateTime?,
       notes: fields[9] as String?,
@@ -32,7 +33,7 @@ class BudgetItemAdapter extends TypeAdapter<BudgetItem> {
   @override
   void write(BinaryWriter writer, BudgetItem obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -52,7 +53,9 @@ class BudgetItemAdapter extends TypeAdapter<BudgetItem> {
       ..writeByte(8)
       ..write(obj.lastUpdated)
       ..writeByte(9)
-      ..write(obj.notes);
+      ..write(obj.notes)
+      ..writeByte(10)
+      ..write(obj.year);
   }
 
   @override

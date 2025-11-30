@@ -1,5 +1,6 @@
 import 'package:budget_management_app/models/budget_item.dart';
 import 'package:budget_management_app/providers/budget_provider.dart';
+import 'package:budget_management_app/providers/year_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -289,6 +290,7 @@ class AddItemDialogState extends State<AddItemDialog> {
         frequency: _currentFrequency,
         activeMonths: _selectedMonths.toList()
           ..sort(), // Ensure sorted for consistency
+        year: Provider.of<YearProvider>(context, listen: false).currentYear ?? DateTime.now().year,
       );
 
       Provider.of<BudgetProvider>(

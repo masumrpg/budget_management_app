@@ -21,6 +21,21 @@ class BudgetProvider extends ChangeNotifier {
     }).toList();
   }
 
+  List<BudgetItem> getItemsForYear(int year, [String searchQuery = '']) {
+    var itemsForYear = _items.where((item) => item.year != null && item.year == year).toList();
+
+    if (searchQuery.isEmpty) {
+      return itemsForYear;
+    }
+
+    return itemsForYear.where((item) {
+      return item.itemName.toLowerCase().contains(searchQuery.toLowerCase()) ||
+          item.picName.toLowerCase().contains(searchQuery.toLowerCase());
+    }).toList();
+  }
+
+  String get searchQuery => _searchQuery;
+
   BudgetProvider() {
     loadBudgetItems();
   }
@@ -29,6 +44,7 @@ class BudgetProvider extends ChangeNotifier {
     _items = _budgetBox.values.toList();
     notifyListeners();
   }
+
 
   void setSearchQuery(String query) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();

@@ -1,5 +1,8 @@
 import 'package:budget_management_app/providers/budget_provider.dart';
 import 'package:budget_management_app/providers/theme_provider.dart';
+import 'package:budget_management_app/providers/year_provider.dart';
+import 'package:budget_management_app/screens/year_selection_report_screen.dart';
+import 'package:budget_management_app/screens/year_selection_screen.dart';
 import 'package:budget_management_app/services/export_service.dart';
 import 'package:budget_management_app/services/notification_service.dart';
 import 'package:budget_management_app/widgets/budget_table.dart';
@@ -21,7 +24,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Budget Management 2025'),
+        title: Consumer<YearProvider>(
+          builder: (context, yearProvider, child) {
+            return Text('Budget Management ${yearProvider.currentYear}');
+          },
+        ),
         elevation: 1,
         actions: [
           Container(
@@ -94,14 +101,49 @@ class _DashboardScreenState extends State<DashboardScreen> {
               );
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.calendar_month_outlined),
+            onPressed: () {
+              // Navigate to year selection screen
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => const YearSelectionScreen(),
+                ),
+              );
+            },
+            tooltip: 'Change Year',
+          ),
+          IconButton(
+            icon: const Icon(Icons.receipt_long_outlined),
+            onPressed: () {
+              // Navigate to report selection screen
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const YearSelectionReportScreen(),
+                ),
+              );
+            },
+            tooltip: 'View Reports',
+          ),
         ],
       ),
       body: Container(
         padding: const EdgeInsets.all(16.0),
-        child: Consumer<BudgetProvider>(
-          builder: (context, budgetProvider, child) {
-            if (budgetProvider.filteredItems.isEmpty) {
-              return const Center(
+        child: Consumer2<BudgetProvider, YearProvider>(
+          builder: (context, budgetProvider, yearProvider, child) {
+            final itemsForCurrentYear = budgetProvider.getItemsForYear(
+              yearProvider.currentYear ?? DateTime.now().year,
+            );
+            final filteredItems = itemsForCurrentYear.where((item) {
+              if (budgetProvider.searchQuery.isEmpty) {
+                return true;
+              }
+              return item.itemName.toLowerCase().contains(budgetProvider.searchQuery.toLowerCase()) ||
+                  item.picName.toLowerCase().contains(budgetProvider.searchQuery.toLowerCase());
+            }).toList();
+
+            if (filteredItems.isEmpty) {
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -112,7 +154,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     SizedBox(height: 16),
                     Text(
-                      'No items found',
+                      'No items found for ${yearProvider.currentYear ?? DateTime.now().year}',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
@@ -120,7 +162,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      'Try adjusting your search',
+                      'Try adding items or adjusting your search',
                       style: TextStyle(
                         color: Colors.grey,
                       ),
@@ -138,7 +180,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   width: 0.5,
                 ),
               ),
-              child: BudgetTable(budgetItems: budgetProvider.filteredItems),
+              child: BudgetTable(budgetItems: filteredItems),
             );
           },
         ),

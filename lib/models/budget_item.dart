@@ -34,6 +34,9 @@ class BudgetItem extends HiveObject {
   @HiveField(9)
   String? notes;
 
+  @HiveField(10)
+  int? year; // Make year nullable to handle existing data
+
   BudgetItem({
     required this.id,
     required this.itemName,
@@ -41,6 +44,7 @@ class BudgetItem extends HiveObject {
     required this.yearlyBudget,
     required this.frequency,
     required this.activeMonths,
+    this.year, // Allow null
     DateTime? createdAt,
     this.lastUpdated,
     this.notes,
