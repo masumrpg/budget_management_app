@@ -21,6 +21,8 @@ class AppTheme {
         surfaceContainerHighest: Color(
           0xFFE8EAF6,
         ), // Light Indigo for containers
+        primaryContainer: Color(0xFFE8EAF6), // Light Indigo
+        onPrimaryContainer: _primaryColor, // Deep Blue text on light container
         error: _errorColor,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
@@ -212,6 +214,8 @@ class AppTheme {
         secondary: secondaryDark,
         surface: surfaceDark,
         surfaceContainerHighest: Color(0xFF2C2C2C),
+        primaryContainer: Color(0xFF3949AB), // Dark Indigo
+        onPrimaryContainer: Colors.white,
         // background: backgroundDark, // deprecated
         error: Color(0xFFEF5350),
         onPrimary: Colors.white,

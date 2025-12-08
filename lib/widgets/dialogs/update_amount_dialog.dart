@@ -2,7 +2,7 @@ import 'package:budget_management_app/models/budget_item.dart';
 import 'package:budget_management_app/providers/budget_provider.dart';
 import 'package:budget_management_app/utils/thousands_formatter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:budget_management_app/l10n/app_localizations.dart';
@@ -198,7 +198,7 @@ class UpdateAmountDialogState extends State<UpdateAmountDialog> {
                   prefixIcon: const Icon(Icons.attach_money),
                 ),
                 keyboardType: TextInputType.number,
-                inputFormatters: [ThousandsFormatter(), FilteringTextInputFormatter.digitsOnly],
+                inputFormatters: [ThousandsFormatter()],
                 onChanged: (value) {
                   // Only need to trigger visual update, logic handles stripping dots inside _onAmountChanged
                   // But wait, _onAmountChanged uses _amountController.text directly.

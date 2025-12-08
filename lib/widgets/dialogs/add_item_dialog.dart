@@ -3,7 +3,7 @@ import 'package:budget_management_app/providers/budget_provider.dart';
 import 'package:budget_management_app/providers/year_provider.dart';
 import 'package:budget_management_app/utils/thousands_formatter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:budget_management_app/l10n/app_localizations.dart';
@@ -178,10 +178,7 @@ class AddItemDialogState extends State<AddItemDialog> {
                           ),
                         ),
                         keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          ThousandsFormatter(),
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
+                        inputFormatters: [ThousandsFormatter()],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return AppLocalizations.of(
@@ -212,9 +209,7 @@ class AddItemDialogState extends State<AddItemDialog> {
                           prefixIcon: const Icon(Icons.repeat),
                         ),
                         keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
+                        inputFormatters: [ThousandsFormatter()],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return AppLocalizations.of(

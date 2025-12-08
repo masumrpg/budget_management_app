@@ -2,7 +2,7 @@ import 'package:budget_management_app/models/budget_item.dart';
 import 'package:budget_management_app/providers/budget_provider.dart';
 import 'package:budget_management_app/utils/thousands_formatter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:budget_management_app/l10n/app_localizations.dart';
@@ -139,7 +139,7 @@ class EditItemDialogState extends State<EditItemDialog> {
                     prefixIcon: const Icon(Icons.monetization_on_outlined),
                   ),
                   keyboardType: TextInputType.number,
-                  inputFormatters: [ThousandsFormatter(), FilteringTextInputFormatter.digitsOnly],
+                  inputFormatters: [ThousandsFormatter()],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return AppLocalizations.of(context)!.pleaseEnterPlannedAmount;

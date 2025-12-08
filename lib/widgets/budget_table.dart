@@ -317,7 +317,7 @@ class BudgetTable extends StatelessWidget {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
-            color: Theme.of(context).colorScheme.primary,
+            color: Theme.of(context).colorScheme.onPrimaryContainer,
           ),
           textAlign: TextAlign.center,
         ),
