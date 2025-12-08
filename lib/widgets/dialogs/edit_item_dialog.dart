@@ -49,28 +49,46 @@ class EditItemDialogState extends State<EditItemDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      titlePadding: const EdgeInsets.all(24),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      actionsPadding: const EdgeInsets.all(24),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            AppLocalizations.of(context)!.editBudgetItem,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-            ),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Icons.edit_note,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                AppLocalizations.of(context)!.editBudgetItem,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           Text(
             AppLocalizations.of(context)!.updateItemDetails,
-            style: TextStyle(
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
-              fontSize: 14,
             ),
           ),
         ],
       ),
       content: SizedBox(
-        width: 450,
+        width: 500,
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
@@ -78,16 +96,14 @@ class EditItemDialogState extends State<EditItemDialog> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(height: 8),
                 TextFormField(
                   controller: _itemNameController,
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context)!.itemName,
                     hintText: AppLocalizations.of(context)!.enterItemName,
-                    border: const OutlineInputBorder(),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    prefixIcon: const Icon(Icons.shopping_bag_outlined),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -96,17 +112,14 @@ class EditItemDialogState extends State<EditItemDialog> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: _picNameController,
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context)!.picLabel,
                     hintText: AppLocalizations.of(context)!.enterPicName,
-                    border: const OutlineInputBorder(),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    prefixIcon: const Icon(Icons.person_outline),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -115,18 +128,15 @@ class EditItemDialogState extends State<EditItemDialog> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: _yearlyBudgetController,
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context)!.yearlyBudgetLabel,
                     hintText: AppLocalizations.of(context)!.enterAmountHint,
                     prefixText: 'Rp ',
-                    border: const OutlineInputBorder(),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    prefixIcon: const Icon(Icons.monetization_on_outlined),
                   ),
                   keyboardType: TextInputType.number,
                   inputFormatters: [ThousandsFormatter(), FilteringTextInputFormatter.digitsOnly],
@@ -157,12 +167,18 @@ class EditItemDialogState extends State<EditItemDialog> {
         ),
       ),
       actions: [
-        TextButton(
+        OutlinedButton(
           onPressed: () => Navigator.of(context).pop(),
+          style: OutlinedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          ),
           child: Text(AppLocalizations.of(context)!.cancel),
         ),
         FilledButton(
           onPressed: _updateItem,
+          style: FilledButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          ),
           child: Text(AppLocalizations.of(context)!.updateItem),
         ),
       ],

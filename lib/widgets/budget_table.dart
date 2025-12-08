@@ -15,13 +15,11 @@ class BudgetTable extends StatelessWidget {
 
   String _formatAmount(double amount) {
     if (amount >= 1000000000) { // 1 miliar
-      // If amount is 1 Billion or more
-      return 'Rp ${(amount / 1000000000).toStringAsFixed(0)} M';
+      return 'Rp ${(amount / 1000000000).toStringAsFixed(1)} M';
     } else if (amount >= 1000000) { // 1 juta
-      // If amount is 1 Million or more
-      return 'Rp ${(amount / 1000000).toStringAsFixed(0)} Jt';
-    } else if (amount >= 1000) { // 1 ribu
-      // If amount is 1 Thousand or more
+      return 'Rp ${(amount / 1000000).toStringAsFixed(1)} Jt';
+    } else if (amount >= 1000) {
+      // 1 ribu
       return 'Rp ${(amount / 1000).toStringAsFixed(0)} Rb';
     } else {
       final formatter = NumberFormat('#,##0', 'id_ID');
@@ -31,168 +29,256 @@ class BudgetTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DataTable2(
-      columnSpacing: 12,
-      horizontalMargin: 12,
-      minWidth: 2000,
-      fixedLeftColumns: 2,
-      headingRowHeight: 50,
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Color(0xFFE0E0E0),
-            width: 1.0,
-          ),
-        ),
+    return Theme(
+      data: Theme.of(context).copyWith(
+        dividerColor: Colors.grey.shade200,
+        iconTheme: IconThemeData(color: Theme.of(context).colorScheme.primary),
       ),
-      headingRowDecoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      ),
-      columns: [
-        DataColumn2(
-          label: Text(
-            AppLocalizations.of(context)!.itemName,
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
-          size: ColumnSize.L,
+      child: DataTable2(
+        columnSpacing: 16,
+        horizontalMargin: 16,
+        minWidth: 2200,
+        fixedLeftColumns: 2,
+        headingRowHeight: 56,
+        dataRowHeight: 64,
+        headingRowColor: WidgetStateProperty.all(
+          Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
         ),
-        DataColumn2(
-          label: Text(
-            AppLocalizations.of(context)!.picName,
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.grey.shade200),
         ),
-        DataColumn2(
-          label: Text(
-            AppLocalizations.of(context)!.pagu,
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
-          numeric: true,
-        ),
-        ...List.generate(
-          12,
-          (index) => DataColumn2(
+        columns: [
+          DataColumn2(
             label: Text(
-              _getMonthName(context, index),
-              style: TextStyle(fontWeight: FontWeight.w600),
+              AppLocalizations.of(context)!.itemName,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            size: ColumnSize.L,
+            fixedWidth: 200,
+          ),
+          DataColumn2(
+            label: Text(
+              AppLocalizations.of(context)!.picName,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            fixedWidth: 150,
+          ),
+          DataColumn2(
+            label: Text(
+              AppLocalizations.of(context)!.pagu,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
             numeric: true,
+            fixedWidth: 140,
           ),
-        ),
-        DataColumn2(
-          label: Text(
-            AppLocalizations.of(context)!.sisa,
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
-          numeric: true,
-        ),
-        DataColumn2(
-          label: Text(
-            AppLocalizations.of(context)!.actions,
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
-        ),
-      ],
-      rows: budgetItems.map((item) {
-        return DataRow(
-          cells: [
-            DataCell(
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(
-                  item.itemName,
-                  style: const TextStyle(fontWeight: FontWeight.w500),
+          ...List.generate(
+            12,
+            (index) => DataColumn2(
+              label: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
                 ),
-              ),
-            ),
-            DataCell(
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(
-                  item.picName,
-                  style: const TextStyle(fontWeight: FontWeight.w500),
+                decoration: BoxDecoration(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-              ),
-            ),
-            DataCell(
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
-                  _formatAmount(item.yearlyBudget),
-                  style: const TextStyle(fontWeight: FontWeight.w500),
-                ),
-              ),
-            ),
-            ...List.generate(12, (monthIndex) {
-              return DataCell(
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: _buildMonthCell(context, item, monthIndex),
-                ),
-                onTap: () {
-                  if (item.activeMonths.contains(monthIndex)) {
-                    showDialog(
-                      context: context,
-                      builder: (context) => UpdateAmountDialog(
-                        item: item,
-                        monthIndex: monthIndex,
-                      ),
-                    );
-                  }
-                },
-              );
-            }),
-            DataCell(
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(
-                  _formatAmount(item.remaining),
+                  _getMonthName(context, index),
                   style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: item.remaining < 0
-                      ? Theme.of(context).colorScheme.error
-                      : Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ),
+              numeric: true,
+              fixedWidth: 110,
             ),
-            DataCell(
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+          ),
+          DataColumn2(
+            label: Text(
+              AppLocalizations.of(context)!.sisa,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            numeric: true,
+            fixedWidth: 140,
+          ),
+          DataColumn2(
+            label: Text(
+              AppLocalizations.of(context)!.actions,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            fixedWidth: 100,
+          ),
+        ],
+        rows: budgetItems.map((item) {
+
+          return DataRow2(
+            color: WidgetStateProperty.resolveWith<Color?>((states) {
+              if (states.contains(WidgetState.hovered)) {
+                return Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.04);
+              }
+              return null; // Transparent so scaffold/container background shows
+            }),
+            cells: [
+              DataCell(
+                Container(
+                  padding: const EdgeInsets.only(right: 8),
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    item.itemName,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+              DataCell(
+                Row(
                   children: [
-                    Tooltip(
-                      message: AppLocalizations.of(context)!.editItem,
-                      child: IconButton(
-                        icon: const Icon(Icons.edit_outlined),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => EditItemDialog(item: item),
-                          );
-                        },
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        splashRadius: 20,
+                    CircleAvatar(
+                      radius: 12,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.secondary.withValues(alpha: 0.2),
+                      child: Text(
+                        item.picName.isNotEmpty
+                            ? item.picName[0].toUpperCase()
+                            : '?',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
                       ),
                     ),
-                    Tooltip(
-                      message: AppLocalizations.of(context)!.deleteItem,
-                      child: IconButton(
-                        icon: const Icon(Icons.delete_outline),
-                        onPressed: () => _showDeleteConfirmation(context, item),
-                        color: Theme.of(context).colorScheme.error,
-                        splashRadius: 20,
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        item.picName,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
-        );
-      }).toList(),
+              DataCell(
+                Text(
+                  _formatAmount(item.yearlyBudget),
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+              ...List.generate(12, (monthIndex) {
+                return DataCell(
+                  Center(child: _buildMonthCell(context, item, monthIndex)),
+                  onTap: () {
+                    if (item.activeMonths.contains(monthIndex)) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => UpdateAmountDialog(
+                          item: item,
+                          monthIndex: monthIndex,
+                        ),
+                      );
+                    }
+                  },
+                );
+              }),
+              DataCell(
+                _buildRemainingCell(context, item)),
+              DataCell(
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit_outlined, size: 20),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => EditItemDialog(item: item),
+                        );
+                      },
+                      color: Theme.of(context).colorScheme.primary,
+                      tooltip: AppLocalizations.of(context)!.editItem,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete_outline, size: 20),
+                      onPressed: () => _showDeleteConfirmation(context, item),
+                      color: Theme.of(context).colorScheme.error,
+                      tooltip: AppLocalizations.of(context)!.deleteItem,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        }).toList(),
+      ),
     );
+  }
+
+  Widget _buildRemainingCell(BuildContext context, BudgetItem item) {
+    final double percentage = item.yearlyBudget > 0
+        ? (item.remaining / item.yearlyBudget).clamp(0.0, 1.0)
+        : 0.0;
+
+    final Color color = item.remaining < 0
+        ? Theme.of(context).colorScheme.error
+        : percentColors(percentage);
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          _formatAmount(item.remaining),
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            color: color,
+            fontSize: 13,
+          ),
+        ),
+        if (item.yearlyBudget > 0 && item.remaining >= 0) ...[
+          const SizedBox(height: 4),
+          SizedBox(
+            width: 80,
+            height: 4,
+            child: LinearProgressIndicator(
+              value: percentage,
+              backgroundColor: Colors.grey.shade200,
+              valueColor: AlwaysStoppedAnimation<Color>(color),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Color percentColors(double percentage) {
+    if (percentage < 0.2) return Colors.red;
+    if (percentage < 0.5) return Colors.orange;
+    return Colors.green;
   }
 
   Widget _buildMonthCell(
@@ -202,35 +288,53 @@ class BudgetTable extends StatelessWidget {
   ) {
     final bool isActive = item.activeMonths.contains(monthIndex);
     final double amount = item.monthlyWithdrawals[monthIndex] ?? 0;
-    final colorScheme = Theme.of(context).colorScheme;
-
-    Color? cellColor;
-    Widget cellContent;
 
     if (!isActive) {
-      cellColor = colorScheme.surfaceContainerHighest;
-      cellContent = const Text('-', textAlign: TextAlign.center);
-    } else if (amount > 0) {
-      cellColor = Color.alphaBlend(
-        colorScheme.primary.withAlpha(51),
-        colorScheme.surface,
+      return Container(
+        width: 32,
+        height: 6,
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(3),
+        ),
       );
-      cellContent = Text(_formatAmount(amount));
-    } else {
-      cellColor = Color.alphaBlend(
-        colorScheme.error.withAlpha(51),
-        colorScheme.surface,
+    }
+
+    if (amount > 0) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: Theme.of(
+            context,
+          ).colorScheme.primaryContainer.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+          ),
+        ),
+        child: Text(
+          _formatAmount(amount),
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          textAlign: TextAlign.center,
+        ),
       );
-      cellContent = Text(AppLocalizations.of(context)!.input, style: TextStyle(color: Colors.red));
     }
 
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: cellColor,
-        borderRadius: BorderRadius.circular(8), // Rounded corners for cells
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.grey.shade300,
+          style: BorderStyle.solid,
+        ),
       ),
-      padding: const EdgeInsets.all(8.0), // Add padding within cells
-      child: Center(child: cellContent),
+      child: Icon(Icons.add, size: 14, color: Colors.grey.shade400),
     );
   }
 
@@ -264,7 +368,10 @@ class BudgetTable extends StatelessWidget {
               child: Text(AppLocalizations.of(context)!.cancel),
               onPressed: () => Navigator.of(context).pop(),
             ),
-            TextButton(
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.error,
+              ),
               child: Text(AppLocalizations.of(context)!.delete),
               onPressed: () {
                 Provider.of<BudgetProvider>(

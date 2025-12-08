@@ -44,7 +44,7 @@ class _DashboardOverviewScreenState extends State<DashboardOverviewScreen> {
             double totalBudget = 0;
             double totalUsed = 0;
             double totalRemaining = 0;
-            
+
             for (final item in itemsForCurrentYear) {
               totalBudget += item.yearlyBudget;
               totalUsed += item.totalUsed;
@@ -102,140 +102,233 @@ class _DashboardOverviewScreenState extends State<DashboardOverviewScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // Header Stats
-                  const Text(
+                  Text(
                     'Dashboard Overview',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Summary Cards
                   Row(
                     children: [
                       Expanded(
                         child: _buildSummaryCard(
+                          context,
                           'Total Budget',
                           _formatAmount(totalBudget),
                           Icons.account_balance_wallet_outlined,
-                          Colors.blue,
+                          Theme.of(context).colorScheme.primary,
                         ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: _buildSummaryCard(
+                          context,
                           'Total Used',
                           _formatAmount(totalUsed),
                           Icons.trending_up_outlined,
-                          Colors.orange,
+                          Theme.of(context).colorScheme.secondary,
                         ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: _buildSummaryCard(
+                          context,
                           'Remaining',
                           _formatAmount(totalRemaining),
-                          Icons.trending_down_outlined,
-                          Colors.green,
+                          Icons.savings_outlined, // Changed icon
+                          Colors.green.shade600,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
-                  
+                  const SizedBox(height: 16),
+
                   Row(
                     children: [
                       Expanded(
                         child: _buildSummaryCard(
+                          context,
                           'Items Count',
                           itemsForCurrentYear.length.toString(),
-                          Icons.list_alt_outlined,
-                          Colors.purple,
+                          Icons.format_list_bulleted_outlined,
+                          Colors.orange.shade700,
                         ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: _buildSummaryCard(
+                          context,
                           'Utilization',
-                          totalBudget > 0 
-                            ? '${((totalUsed / totalBudget) * 100).toStringAsFixed(1)}%' 
+                          totalBudget > 0
+                              ? '${((totalUsed / totalBudget) * 100).toStringAsFixed(1)}%'
                             : '0%',
-                          Icons.bar_chart_outlined,
-                          Colors.indigo,
+                          Icons.pie_chart_outline_outlined,
+                          Colors.purple.shade600,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
-                  
+                  const SizedBox(height: 32),
+
                   // Upcoming Items Section by PIC
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_today_outlined,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Upcoming Schedules',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
                   Container(
-                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainer,
-                      borderRadius: BorderRadius.circular(12),
+                      color: Theme.of(context).cardTheme.color,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.grey.shade200),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.notifications_active_outlined),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Next Upcoming Items by PIC',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
                         if (nextUpcomingByPic.isEmpty)
-                          const Padding(
-                            padding: EdgeInsets.all(16),
-                            child: Text(
-                              'No upcoming budget items scheduled',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontStyle: FontStyle.italic,
+                          Padding(
+                            padding: const EdgeInsets.all(32),
+                            child: Center(
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.event_busy_outlined,
+                                    size: 48,
+                                    color: Colors.grey.shade400,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    'No upcoming budget items scheduled',
+                                    style: TextStyle(
+                                      color: Colors.grey.shade600,
+                                      fontSize: 16,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
                               ),
-                              textAlign: TextAlign.center,
                             ),
                           )
                         else
-                          ListView.builder(
+                          ListView.separated(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: nextUpcomingByPic.length,
+                            separatorBuilder: (context, index) =>
+                                Divider(height: 1, color: Colors.grey.shade100),
                             itemBuilder: (context, index) {
                               final pic = nextUpcomingByPic.keys.elementAt(index);
                               final data = nextUpcomingByPic[pic]!;
 
-                              return Card(
-                                margin: const EdgeInsets.only(bottom: 8),
-                                child: ListTile(
-                                  leading: Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).colorScheme.primaryContainer,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Icon(
-                                      Icons.person,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  title: Text(pic),
-                                  subtitle: Text('Next in: ${data['monthName']} (${data['itemCount']} item${data['itemCount'] > 1 ? 's' : ''})'),
-                                  trailing: Text(
-                                    _formatAmount(data['item']?.yearlyBudget ?? 0),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
+                              return ListTile(
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 12,
+                                ),
+                                leading: CircleAvatar(
+                                  backgroundColor: Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceContainerHighest,
+                                  child: Text(
+                                    pic.isNotEmpty ? pic[0].toUpperCase() : '?',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
                                     ),
                                   ),
+                                ),
+                                title: Text(
+                                  pic,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                subtitle: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.access_time,
+                                      size: 14,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'Next: ${data['monthName']}',
+                                      style: TextStyle(
+                                        color: Colors.grey.shade600,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary
+                                            .withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Text(
+                                        '${data['itemCount']} items',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.secondary,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                trailing: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      'Budget',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.grey.shade500,
+                                      ),
+                                    ),
+                                    Text(
+                                      _formatAmount(
+                                        data['item']?.yearlyBudget ?? 0,
+                                      ),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               );
                             },
@@ -243,36 +336,71 @@ class _DashboardOverviewScreenState extends State<DashboardOverviewScreen> {
                       ],
                     ),
                   ),
-                  
-                  const SizedBox(height: 24),
-                  
+
+                  const SizedBox(height: 32),
+
                   // Year Selection
                   Card(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      side: BorderSide(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.1),
+                      ),
+                    ),
+                    color: Theme.of(context).colorScheme.surface,
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
                             children: [
-                              const Text(
-                                'Current Year',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 14,
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.primary.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(
+                                  Icons.calendar_month_outlined,
+                                  color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
-                              Text(
-                                yearProvider.currentYear?.toString() ?? 'Not set',
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              const SizedBox(width: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Active Budget Year',
+                                    style: TextStyle(
+                                      color: Colors.grey.shade600,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    yearProvider.currentYear?.toString() ??
+                                        'Not set',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onSurface,
+                                        ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                          ElevatedButton(
+                          OutlinedButton.icon(
                             onPressed: () {
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
@@ -280,7 +408,11 @@ class _DashboardOverviewScreenState extends State<DashboardOverviewScreen> {
                                 ),
                               );
                             },
-                            child: const Text('Change Year'),
+                            icon: const Icon(
+                              Icons.edit_calendar_outlined,
+                              size: 18,
+                            ),
+                            label: const Text('Change Year'),
                           ),
                         ],
                       ),
@@ -296,42 +428,56 @@ class _DashboardOverviewScreenState extends State<DashboardOverviewScreen> {
   }
 
   Widget _buildSummaryCard(
+    BuildContext context,
     String title,
     String value,
     IconData icon,
     Color color,
   ) {
-    return Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, color: color),
-                const SizedBox(width: 8),
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade200),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.08),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
             ),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+            child: Icon(icon, color: color, size: 24),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 20, // Slightly smaller to fit "M" or "Jt"
             ),
-          ],
-        ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Colors.grey.shade600,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
       ),
     );
   }
