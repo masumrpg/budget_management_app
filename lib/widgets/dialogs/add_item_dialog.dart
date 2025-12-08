@@ -1,6 +1,7 @@
 import 'package:budget_management_app/models/budget_item.dart';
 import 'package:budget_management_app/providers/budget_provider.dart';
 import 'package:budget_management_app/providers/year_provider.dart';
+import 'package:budget_management_app/utils/thousands_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -155,12 +156,14 @@ class AddItemDialogState extends State<AddItemDialog> {
                     ),
                   ),
                   keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  inputFormatters: [ThousandsFormatter(), FilteringTextInputFormatter.digitsOnly],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a yearly budget';
                     }
-                    if (double.tryParse(value) == null) {
+                    // Remove formatting characters before validation
+                    final cleanValue = value.replaceAll('.', '');
+                    if (double.tryParse(cleanValue) == null) {
                       return 'Please enter a valid number';
                     }
                     return null;
@@ -282,11 +285,15 @@ class AddItemDialogState extends State<AddItemDialog> {
         return;
       }
 
+      // Remove formatting characters before parsing
+      final cleanBudgetValue = _yearlyBudgetController.text.replaceAll('.', '');
+      final budgetAmount = double.parse(cleanBudgetValue);
+
       final newItem = BudgetItem(
         id: const Uuid().v4(),
         itemName: _itemNameController.text,
         picName: _picNameController.text,
-        yearlyBudget: double.parse(_yearlyBudgetController.text),
+        yearlyBudget: budgetAmount,
         frequency: _currentFrequency,
         activeMonths: _selectedMonths.toList()
           ..sort(), // Ensure sorted for consistency

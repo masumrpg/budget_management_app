@@ -1,6 +1,8 @@
 import 'package:budget_management_app/models/budget_item.dart';
 import 'package:budget_management_app/providers/budget_provider.dart';
+import 'package:budget_management_app/utils/thousands_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -30,11 +32,16 @@ class UpdateAmountDialogState extends State<UpdateAmountDialog> {
   @override
   void initState() {
     super.initState();
-    _amountController.text =
-        widget.item.monthlyWithdrawals[widget.monthIndex]?.toString() ?? '';
+    final amount = widget.item.monthlyWithdrawals[widget.monthIndex] ?? 0;
+    // Format the amount with thousand separators
+    final formatter = NumberFormat('#,###', 'id_ID');
+    final formattedValue = formatter.format(amount).replaceAll(',', '.');
+    _amountController.text = formattedValue;
 
     // Initialize the remaining budget display
-    _updateRemainingDisplay(double.tryParse(_amountController.text) ?? 0);
+    // Remove formatting characters before parsing
+    final cleanAmountValue = _amountController.text.replaceAll('.', '');
+    _updateRemainingDisplay(double.tryParse(cleanAmountValue) ?? 0);
 
     // Add listener to update remaining budget when amount changes
     _amountController.addListener(_onAmountChanged);
@@ -51,8 +58,9 @@ class UpdateAmountDialogState extends State<UpdateAmountDialog> {
     final newRemaining = widget.item.yearlyBudget - (widget.item.totalUsed + difference);
 
     setState(() {
-      final formatter = NumberFormat('#,##0', 'id_ID');
-      _formattedRemaining = 'Rp ${formatter.format(newRemaining)}';
+      final formatter = NumberFormat('#,###', 'id_ID');
+      final formattedValue = formatter.format(newRemaining).replaceAll(',', '.');
+      _formattedRemaining = 'Rp $formattedValue';
     });
   }
 
@@ -132,19 +140,24 @@ class UpdateAmountDialogState extends State<UpdateAmountDialog> {
                   ),
                 ),
                 keyboardType: TextInputType.number,
+                inputFormatters: [ThousandsFormatter(), FilteringTextInputFormatter.digitsOnly],
                 onChanged: (value) {
-                  final inputAmount = double.tryParse(value) ?? 0;
+                  // Remove formatting characters before parsing
+                  final cleanValue = value.replaceAll('.', '');
+                  final inputAmount = double.tryParse(cleanValue) ?? 0;
                   _updateRemainingDisplay(inputAmount);
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter an amount';
                   }
-                  if (double.tryParse(value) == null) {
+                  // Remove formatting characters before validation
+                  final cleanValue = value.replaceAll('.', '');
+                  if (double.tryParse(cleanValue) == null) {
                     return 'Please enter a valid number';
                   }
 
-                  final inputAmount = double.parse(value);
+                  final inputAmount = double.parse(cleanValue);
                   final newRemaining = widget.item.yearlyBudget - (widget.item.totalUsed + (inputAmount - (widget.item.monthlyWithdrawals[widget.monthIndex] ?? 0)));
                   if (newRemaining < 0) {
                     return 'Amount exceeds remaining budget';
@@ -171,7 +184,9 @@ class UpdateAmountDialogState extends State<UpdateAmountDialog> {
 
   void _updateAmount() {
     if (_formKey.currentState!.validate()) {
-      final amount = double.parse(_amountController.text);
+      // Remove formatting characters before parsing
+      final cleanAmountValue = _amountController.text.replaceAll('.', '');
+      final amount = double.parse(cleanAmountValue);
 
       final updatedItem = widget.item;
       updatedItem.monthlyWithdrawals[widget.monthIndex] = amount;

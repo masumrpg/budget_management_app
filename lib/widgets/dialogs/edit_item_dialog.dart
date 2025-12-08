@@ -1,5 +1,6 @@
 import 'package:budget_management_app/models/budget_item.dart';
 import 'package:budget_management_app/providers/budget_provider.dart';
+import 'package:budget_management_app/utils/thousands_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -28,8 +29,11 @@ class EditItemDialogState extends State<EditItemDialog> {
     super.initState();
     _itemNameController = TextEditingController(text: widget.item.itemName);
     _picNameController = TextEditingController(text: widget.item.picName);
+    // Format the yearly budget with thousand separators
+    final formatter = NumberFormat('#,###', 'id_ID');
+    final formattedValue = formatter.format(widget.item.yearlyBudget).replaceAll(',', '.');
     _yearlyBudgetController = TextEditingController(
-      text: widget.item.yearlyBudget.toStringAsFixed(0),
+      text: formattedValue,
     );
   }
 
@@ -124,21 +128,24 @@ class EditItemDialogState extends State<EditItemDialog> {
                     ),
                   ),
                   keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  inputFormatters: [ThousandsFormatter(), FilteringTextInputFormatter.digitsOnly],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a yearly budget';
                     }
-                    if (double.tryParse(value) == null) {
+                    // Remove formatting characters before validation
+                    final cleanValue = value.replaceAll('.', '');
+                    if (double.tryParse(cleanValue) == null) {
                       return 'Please enter a valid number';
                     }
-                    
-                    final budget = double.parse(value);
+
+                    final budget = double.parse(cleanValue);
                     final formatter = NumberFormat('#,##0', 'id_ID');
-                    
+
                     // Check if the budget is less than the total used amount
                     if (budget < widget.item.totalUsed) {
-                      return 'Yearly budget cannot be less than total used amount (${formatter.format(widget.item.totalUsed)})';
+                      final formattedUsed = formatter.format(widget.item.totalUsed).replaceAll(',', '.');
+                      return 'Yearly budget cannot be less than total used amount (Rp $formattedUsed)';
                     }
                     return null;
                   },
@@ -163,11 +170,15 @@ class EditItemDialogState extends State<EditItemDialog> {
 
   void _updateItem() {
     if (_formKey.currentState!.validate()) {
+      // Remove formatting characters before parsing
+      final cleanBudgetValue = _yearlyBudgetController.text.replaceAll('.', '');
+      final budgetAmount = double.parse(cleanBudgetValue);
+
       final updatedItem = BudgetItem(
         id: widget.item.id,
         itemName: _itemNameController.text,
         picName: _picNameController.text,
-        yearlyBudget: double.parse(_yearlyBudgetController.text),
+        yearlyBudget: budgetAmount,
         frequency: widget.item.frequency,
         activeMonths: widget.item.activeMonths,
         year: widget.item.year ?? DateTime.now().year, // Use current year if item year is null
@@ -175,7 +186,7 @@ class EditItemDialogState extends State<EditItemDialog> {
         lastUpdated: DateTime.now(),
         notes: widget.item.notes,
       );
-      
+
       // Preserve the existing monthly withdrawals
       updatedItem.monthlyWithdrawals.addAll(widget.item.monthlyWithdrawals);
 
@@ -183,7 +194,7 @@ class EditItemDialogState extends State<EditItemDialog> {
         context,
         listen: false,
       ).updateBudgetItem(updatedItem);
-      
+
       Navigator.of(context).pop();
     }
   }
