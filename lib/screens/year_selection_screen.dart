@@ -2,6 +2,7 @@ import 'package:budget_management_app/providers/year_provider.dart';
 import 'package:budget_management_app/screens/main_layout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:budget_management_app/l10n/app_localizations.dart';
 
 class YearSelectionScreen extends StatefulWidget {
   const YearSelectionScreen({super.key});
@@ -31,7 +32,7 @@ class _YearSelectionScreenState extends State<YearSelectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Select Budget Year'),
+        title: Text(AppLocalizations.of(context)!.selectBudgetYear),
         automaticallyImplyLeading: false, // Disable back button
       ),
       body: Container(
@@ -58,8 +59,8 @@ class _YearSelectionScreenState extends State<YearSelectionScreen> {
                         color: Colors.blue,
                       ),
                       const SizedBox(height: 24),
-                      const Text(
-                        'Budget Management App',
+                      Text(
+                        AppLocalizations.of(context)!.selectBudgetYearTitle,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 24,
@@ -67,8 +68,8 @@ class _YearSelectionScreenState extends State<YearSelectionScreen> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
-                        'Please select the budget year to get started',
+                      Text(
+                        AppLocalizations.of(context)!.selectBudgetYearSubtitle,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
@@ -78,9 +79,9 @@ class _YearSelectionScreenState extends State<YearSelectionScreen> {
                       const SizedBox(height: 32),
                       TextFormField(
                         controller: _yearController,
-                        decoration: const InputDecoration(
-                          labelText: 'Budget Year',
-                          hintText: 'Enter year (e.g., 2025)',
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.budgetYearLabel,
+                          hintText: AppLocalizations.of(context)!.budgetYearHint,
                           prefixIcon: Icon(Icons.numbers),
                           border: OutlineInputBorder(),
                           contentPadding: EdgeInsets.symmetric(
@@ -91,19 +92,19 @@ class _YearSelectionScreenState extends State<YearSelectionScreen> {
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter a year';
+                            return AppLocalizations.of(context)!.pleaseEnterYear;
                           }
-                          
+
                           final year = int.tryParse(value);
                           if (year == null) {
-                            return 'Please enter a valid year';
+                            return AppLocalizations.of(context)!.pleaseEnterValidYear;
                           }
-                          
+
                           final currentYear = DateTime.now().year;
                           if (year < 1970 || year > currentYear + 10) {
-                            return 'Please enter a valid year';
+                            return AppLocalizations.of(context)!.pleaseEnterValidYear;
                           }
-                          
+
                           return null;
                         },
                       ),
@@ -126,8 +127,8 @@ class _YearSelectionScreenState extends State<YearSelectionScreen> {
                         style: FilledButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
-                        child: const Text(
-                          'Continue to Budget Management',
+                        child: Text(
+                          AppLocalizations.of(context)!.continueToApp,
                           style: TextStyle(fontSize: 16),
                         ),
                       ),

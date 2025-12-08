@@ -2,6 +2,7 @@ import 'package:budget_management_app/providers/budget_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:budget_management_app/l10n/app_localizations.dart';
 
 class ReportDetailScreen extends StatefulWidget {
   final int selectedYear;
@@ -33,16 +34,16 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Report ${widget.selectedYear}'),
+        title: Text(AppLocalizations.of(context)!.reportTitle(widget.selectedYear)),
       ),
       body: Container(
         padding: const EdgeInsets.all(16.0),
         child: Consumer<BudgetProvider>(
           builder: (context, budgetProvider, child) {
             final itemsForYear = budgetProvider.getItemsForYear(widget.selectedYear);
-            
+
             if (itemsForYear.isEmpty) {
-              return const Center(
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -53,7 +54,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                     ),
                     SizedBox(height: 16),
                     Text(
-                      'No budget data for this year',
+                      AppLocalizations.of(context)!.noBudgetDataForYear,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
@@ -63,18 +64,18 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                 ),
               );
             }
-            
+
             // Calculate totals
             double totalBudget = 0;
             double totalUsed = 0;
             double totalRemaining = 0;
-            
+
             for (final item in itemsForYear) {
               totalBudget += item.yearlyBudget;
               totalUsed += item.totalUsed;
               totalRemaining += item.remaining;
             }
-            
+
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -89,7 +90,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                     child: Column(
                       children: [
                         Text(
-                          'Budget Report ${widget.selectedYear}',
+                          AppLocalizations.of(context)!.budgetReportTitle(widget.selectedYear),
                           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -98,16 +99,16 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            _buildSummaryCard('Total Budget', _formatAmount(totalBudget), Colors.blue),
-                            _buildSummaryCard('Total Used', _formatAmount(totalUsed), Colors.orange),
-                            _buildSummaryCard('Total Remaining', _formatAmount(totalRemaining), Colors.green),
+                            _buildSummaryCard(AppLocalizations.of(context)!.totalBudget, _formatAmount(totalBudget), Colors.blue),
+                            _buildSummaryCard(AppLocalizations.of(context)!.totalUsed, _formatAmount(totalUsed), Colors.orange),
+                            _buildSummaryCard(AppLocalizations.of(context)!.remaining, _formatAmount(totalRemaining), Colors.green),
                           ],
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Detailed Table
                   Card(
                     elevation: 2,
@@ -118,43 +119,43 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                           return Theme.of(context).colorScheme.surfaceContainerHighest;
                         },
                       ),
-                      columns: const [
+                      columns: [
                         DataColumn(
                           label: Text(
-                            'Item Name',
+                            AppLocalizations.of(context)!.itemName,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                         DataColumn(
                           label: Text(
-                            'PIC',
+                            AppLocalizations.of(context)!.picName,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                         DataColumn(
                           label: Text(
-                            'Pagu',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                        DataColumn(
-                          label: Text(
-                            'Used',
+                            AppLocalizations.of(context)!.pagu,
                             style: TextStyle(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.right,
                           ),
                         ),
                         DataColumn(
                           label: Text(
-                            'Remaining',
+                            AppLocalizations.of(context)!.actualAmount,
                             style: TextStyle(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.right,
                           ),
                         ),
                         DataColumn(
                           label: Text(
-                            'Usage %',
+                            AppLocalizations.of(context)!.remaining,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.right,
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            AppLocalizations.of(context)!.usagePercentage,
                             style: TextStyle(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.right,
                           ),
@@ -171,8 +172,8 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                               Text(
                                 _formatAmount(item.remaining),
                                 style: TextStyle(
-                                  color: item.remaining < 0 
-                                    ? Theme.of(context).colorScheme.error 
+                                  color: item.remaining < 0
+                                    ? Theme.of(context).colorScheme.error
                                     : Theme.of(context).colorScheme.primary,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -192,7 +193,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Summary Section
                   Card(
                     elevation: 2,
@@ -202,18 +203,18 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Summary',
+                            AppLocalizations.of(context)!.summary,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           const SizedBox(height: 12),
-                          _buildSummaryRow('Total Items:', itemsForYear.length.toString()),
-                          _buildSummaryRow('Total Budget:', _formatAmount(totalBudget)),
-                          _buildSummaryRow('Total Used:', _formatAmount(totalUsed)),
-                          _buildSummaryRow('Total Remaining:', _formatAmount(totalRemaining)),
+                          _buildSummaryRow(AppLocalizations.of(context)!.totalItems, itemsForYear.length.toString()),
+                          _buildSummaryRow(AppLocalizations.of(context)!.totalBudget, _formatAmount(totalBudget)),
+                          _buildSummaryRow(AppLocalizations.of(context)!.totalUsed, _formatAmount(totalUsed)),
+                          _buildSummaryRow(AppLocalizations.of(context)!.remaining, _formatAmount(totalRemaining)),
                           _buildSummaryRow(
-                            'Overall Usage:',
-                            totalBudget > 0 
-                              ? '${((totalUsed / totalBudget) * 100).toStringAsFixed(1)}%' 
+                            AppLocalizations.of(context)!.overallUsage,
+                            totalBudget > 0
+                              ? '${((totalUsed / totalBudget) * 100).toStringAsFixed(1)}%'
                               : '0%',
                           ),
                         ],
@@ -228,7 +229,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
       ),
     );
   }
-  
+
   Widget _buildSummaryCard(String title, String value, Color color) {
     return Expanded(
       child: Container(
@@ -266,7 +267,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
       ),
     );
   }
-  
+
   Widget _buildSummaryRow(String title, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),

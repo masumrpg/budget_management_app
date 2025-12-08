@@ -3,6 +3,7 @@ import 'package:budget_management_app/providers/year_provider.dart';
 import 'package:budget_management_app/screens/report_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:budget_management_app/l10n/app_localizations.dart';
 
 class YearSelectionReportScreen extends StatefulWidget {
   const YearSelectionReportScreen({super.key});
@@ -16,7 +17,7 @@ class _YearSelectionReportScreenState extends State<YearSelectionReportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Select Year for Report'),
+        title: Text(AppLocalizations.of(context)!.selectYearForReport),
       ),
       body: Container(
         padding: const EdgeInsets.all(24.0),
@@ -29,12 +30,12 @@ class _YearSelectionReportScreenState extends State<YearSelectionReportScreen> {
                 allYears.add(item.year!);
               }
             }
-            
+
             // Convert to list and sort in descending order
             final sortedYears = allYears.toList()..sort((a, b) => b.compareTo(a));
-            
+
             if (sortedYears.isEmpty) {
-              return const Center(
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -45,7 +46,7 @@ class _YearSelectionReportScreenState extends State<YearSelectionReportScreen> {
                     ),
                     SizedBox(height: 16),
                     Text(
-                      'No budget data available',
+                      AppLocalizations.of(context)!.noBudgetData,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
@@ -53,7 +54,7 @@ class _YearSelectionReportScreenState extends State<YearSelectionReportScreen> {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      'Add some budget items first',
+                      AppLocalizations.of(context)!.addBudgetItemsFirst,
                       style: TextStyle(
                         color: Colors.grey,
                       ),
@@ -62,7 +63,7 @@ class _YearSelectionReportScreenState extends State<YearSelectionReportScreen> {
                 ),
               );
             }
-            
+
             return ListView.builder(
               itemCount: sortedYears.length,
               itemBuilder: (context, index) {
@@ -72,7 +73,7 @@ class _YearSelectionReportScreenState extends State<YearSelectionReportScreen> {
                   child: ListTile(
                     leading: const Icon(Icons.calendar_month),
                     title: Text(
-                      'Report for $year',
+                      AppLocalizations.of(context)!.reportForYear(year),
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,

@@ -6,6 +6,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:budget_management_app/l10n/app_localizations.dart';
 
 class BudgetTable extends StatelessWidget {
   final List<BudgetItem> budgetItems;
@@ -48,22 +49,22 @@ class BudgetTable extends StatelessWidget {
         color: Theme.of(context).colorScheme.surfaceContainerHighest,
       ),
       columns: [
-        const DataColumn2(
+        DataColumn2(
           label: Text(
-            'Item Name',
+            AppLocalizations.of(context)!.itemName,
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
           size: ColumnSize.L,
         ),
-        const DataColumn2(
+        DataColumn2(
           label: Text(
-            'PIC',
+            AppLocalizations.of(context)!.picName,
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
         DataColumn2(
           label: Text(
-            'Pagu',
+            AppLocalizations.of(context)!.pagu,
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
           numeric: true,
@@ -72,7 +73,7 @@ class BudgetTable extends StatelessWidget {
           12,
           (index) => DataColumn2(
             label: Text(
-              _monthNames[index],
+              _getMonthName(context, index),
               style: TextStyle(fontWeight: FontWeight.w600),
             ),
             numeric: true,
@@ -80,14 +81,14 @@ class BudgetTable extends StatelessWidget {
         ),
         DataColumn2(
           label: Text(
-            'Sisa',
+            AppLocalizations.of(context)!.sisa,
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
           numeric: true,
         ),
-        const DataColumn2(
+        DataColumn2(
           label: Text(
-            'Actions',
+            AppLocalizations.of(context)!.actions,
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
@@ -162,7 +163,7 @@ class BudgetTable extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Tooltip(
-                      message: 'Edit Item',
+                      message: AppLocalizations.of(context)!.editItem,
                       child: IconButton(
                         icon: const Icon(Icons.edit_outlined),
                         onPressed: () {
@@ -176,7 +177,7 @@ class BudgetTable extends StatelessWidget {
                       ),
                     ),
                     Tooltip(
-                      message: 'Delete Item',
+                      message: AppLocalizations.of(context)!.deleteItem,
                       child: IconButton(
                         icon: const Icon(Icons.delete_outline),
                         onPressed: () => _showDeleteConfirmation(context, item),
@@ -220,7 +221,7 @@ class BudgetTable extends StatelessWidget {
         colorScheme.error.withAlpha(51),
         colorScheme.surface,
       );
-      cellContent = const Text('Input', style: TextStyle(color: Colors.red));
+      cellContent = Text(AppLocalizations.of(context)!.input, style: TextStyle(color: Colors.red));
     }
 
     return Container(
@@ -233,35 +234,38 @@ class BudgetTable extends StatelessWidget {
     );
   }
 
-  final List<String> _monthNames = const [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
+  String _getMonthName(BuildContext context, int index) {
+    final months = [
+      AppLocalizations.of(context)!.january,
+      AppLocalizations.of(context)!.february,
+      AppLocalizations.of(context)!.march,
+      AppLocalizations.of(context)!.april,
+      AppLocalizations.of(context)!.may,
+      AppLocalizations.of(context)!.june,
+      AppLocalizations.of(context)!.july,
+      AppLocalizations.of(context)!.august,
+      AppLocalizations.of(context)!.september,
+      AppLocalizations.of(context)!.october,
+      AppLocalizations.of(context)!.november,
+      AppLocalizations.of(context)!.december,
+    ];
+    return months[index];
+  }
 
   void _showDeleteConfirmation(BuildContext context, BudgetItem item) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirm Delete'),
-          content: Text('Are you sure you want to delete "${item.itemName}"?'),
+          title: Text(AppLocalizations.of(context)!.confirmDelete),
+          content: Text(AppLocalizations.of(context)!.deleteConfirmationMessage(item.itemName)),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancel),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: const Text('Delete'),
+              child: Text(AppLocalizations.of(context)!.delete),
               onPressed: () {
                 Provider.of<BudgetProvider>(
                   context,

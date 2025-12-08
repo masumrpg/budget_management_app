@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:budget_management_app/l10n/app_localizations.dart';
 
 class AddItemDialog extends StatefulWidget {
   const AddItemDialog({super.key});
@@ -24,20 +25,22 @@ class AddItemDialogState extends State<AddItemDialog> {
   Set<int> _selectedMonths = {};
   int _currentFrequency = 0;
 
-  final List<String> _monthNames = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
+  List<String> _getMonthNames(BuildContext context) {
+    return [
+      AppLocalizations.of(context)!.january,
+      AppLocalizations.of(context)!.february,
+      AppLocalizations.of(context)!.march,
+      AppLocalizations.of(context)!.april,
+      AppLocalizations.of(context)!.may,
+      AppLocalizations.of(context)!.june,
+      AppLocalizations.of(context)!.july,
+      AppLocalizations.of(context)!.august,
+      AppLocalizations.of(context)!.september,
+      AppLocalizations.of(context)!.october,
+      AppLocalizations.of(context)!.november,
+      AppLocalizations.of(context)!.december,
+    ];
+  }
 
   @override
   void initState() {
@@ -79,8 +82,8 @@ class AddItemDialogState extends State<AddItemDialog> {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Add New Budget Item',
+          Text(
+            AppLocalizations.of(context)!.addNewBudgetItem,
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
@@ -88,7 +91,7 @@ class AddItemDialogState extends State<AddItemDialog> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Fill in the details below',
+            AppLocalizations.of(context)!.fillInDetails,
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontSize: 14,
@@ -108,8 +111,8 @@ class AddItemDialogState extends State<AddItemDialog> {
                 TextFormField(
                   controller: _itemNameController,
                   decoration: InputDecoration(
-                    labelText: 'Item Name',
-                    hintText: 'Enter item name...',
+                    labelText: AppLocalizations.of(context)!.itemName,
+                    hintText: AppLocalizations.of(context)!.enterItemName,
                     border: const OutlineInputBorder(),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -118,7 +121,7 @@ class AddItemDialogState extends State<AddItemDialog> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter an item name';
+                      return AppLocalizations.of(context)!.pleaseEnterItemName;
                     }
                     return null;
                   },
@@ -127,8 +130,8 @@ class AddItemDialogState extends State<AddItemDialog> {
                 TextFormField(
                   controller: _picNameController,
                   decoration: InputDecoration(
-                    labelText: 'Person in Charge (PIC)',
-                    hintText: 'Enter PIC name...',
+                    labelText: AppLocalizations.of(context)!.picLabel,
+                    hintText: AppLocalizations.of(context)!.enterPicName,
                     border: const OutlineInputBorder(),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -137,7 +140,7 @@ class AddItemDialogState extends State<AddItemDialog> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a PIC name';
+                      return AppLocalizations.of(context)!.pleaseEnterPicName;
                     }
                     return null;
                   },
@@ -146,8 +149,8 @@ class AddItemDialogState extends State<AddItemDialog> {
                 TextFormField(
                   controller: _yearlyBudgetController,
                   decoration: InputDecoration(
-                    labelText: 'Yearly Budget',
-                    hintText: 'Enter amount...',
+                    labelText: AppLocalizations.of(context)!.yearlyBudgetLabel,
+                    hintText: AppLocalizations.of(context)!.enterAmountHint,
                     prefixText: 'Rp ',
                     border: const OutlineInputBorder(),
                     contentPadding: const EdgeInsets.symmetric(
@@ -159,12 +162,12 @@ class AddItemDialogState extends State<AddItemDialog> {
                   inputFormatters: [ThousandsFormatter(), FilteringTextInputFormatter.digitsOnly],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a yearly budget';
+                      return AppLocalizations.of(context)!.pleaseEnterPlannedAmount;
                     }
                     // Remove formatting characters before validation
                     final cleanValue = value.replaceAll('.', '');
                     if (double.tryParse(cleanValue) == null) {
-                      return 'Please enter a valid number';
+                      return AppLocalizations.of(context)!.pleaseEnterValidNumber;
                     }
                     return null;
                   },
@@ -173,8 +176,8 @@ class AddItemDialogState extends State<AddItemDialog> {
                 TextFormField(
                   controller: _frequencyController,
                   decoration: InputDecoration(
-                    labelText: 'Frequency (times a year)',
-                    hintText: 'Enter frequency (1-12)...',
+                    labelText: AppLocalizations.of(context)!.frequencyLabel,
+                    hintText: AppLocalizations.of(context)!.frequencyHint,
                     border: const OutlineInputBorder(),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -185,19 +188,19 @@ class AddItemDialogState extends State<AddItemDialog> {
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a frequency';
+                      return AppLocalizations.of(context)!.pleaseEnterFrequency;
                     }
                     final freq = int.tryParse(value);
                     if (freq == null || freq < 1 || freq > 12) {
-                      return 'Please enter a number between 1 and 12';
+                      return AppLocalizations.of(context)!.pleaseEnterValidFrequency;
                     }
                     return null;
                   },
                 ),
                 if (_currentFrequency > 0) ...[
                   const SizedBox(height: 20),
-                  const Text(
-                    'Select Active Months:',
+                  Text(
+                    AppLocalizations.of(context)!.selectActiveMonths,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -215,7 +218,7 @@ class AddItemDialogState extends State<AddItemDialog> {
                       runSpacing: 8.0,
                       children: List.generate(12, (index) {
                         return ChoiceChip(
-                          label: Text(_monthNames[index]),
+                          label: Text(_getMonthNames(context)[index]),
                           selected: _selectedMonths.contains(index),
                           selectedColor: Theme.of(context).colorScheme.primary,
                           onSelected: (selected) {
@@ -228,7 +231,7 @@ class AddItemDialogState extends State<AddItemDialog> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
-                                        'You can only select $_currentFrequency months.',
+                                        AppLocalizations.of(context)!.maxMonthsSelection(_currentFrequency),
                                       ),
                                       backgroundColor: Theme.of(context).colorScheme.error,
                                     ),
@@ -247,7 +250,7 @@ class AddItemDialogState extends State<AddItemDialog> {
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
-                        'Please select exactly $_currentFrequency months.',
+                        AppLocalizations.of(context)!.selectExactlyMonths(_currentFrequency),
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.error,
                           fontSize: 12,
@@ -263,11 +266,11 @@ class AddItemDialogState extends State<AddItemDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         FilledButton(
           onPressed: _saveItem,
-          child: const Text('Save Item'),
+          child: Text(AppLocalizations.of(context)!.saveItem),
         ),
       ],
     );
@@ -279,7 +282,7 @@ class AddItemDialogState extends State<AddItemDialog> {
         // Show an error for month selection
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Please select exactly $_currentFrequency months.'),
+            content: Text(AppLocalizations.of(context)!.selectExactlyMonths(_currentFrequency)),
           ),
         );
         return;

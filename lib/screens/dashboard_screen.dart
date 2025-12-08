@@ -10,6 +10,8 @@ import 'package:budget_management_app/widgets/dialogs/add_item_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:budget_management_app/l10n/app_localizations.dart';
+
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -26,7 +28,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       appBar: AppBar(
         title: Consumer<YearProvider>(
           builder: (context, yearProvider, child) {
-            return Text('Budget Management ${yearProvider.currentYear}');
+            return Text(AppLocalizations.of(context)!.budgetManagementTitle(yearProvider.currentYear ?? DateTime.now().year));
           },
         ),
         elevation: 1,
@@ -40,8 +42,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             child: TextField(
               controller: _searchController,
-              decoration: const InputDecoration(
-                hintText: 'Search items or PIC...',
+              decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.searchHint,
                 prefixIcon: Icon(Icons.search),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -58,11 +60,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
             icon: const Icon(Icons.notifications_outlined),
             onPressed: () {
               NotificationService.showNotification(
-                'Test Notification',
-                'This is a test notification.',
+                AppLocalizations.of(context)!.notificationTitle,
+                AppLocalizations.of(context)!.notificationBody,
               );
             },
-            tooltip: 'Notifications',
+            tooltip: AppLocalizations.of(context)!.notificationsTooltip,
           ),
           IconButton(
             icon: const Icon(Icons.file_download_outlined),
@@ -72,17 +74,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 listen: false,
               );
               final messenger = ScaffoldMessenger.of(context);
+              final localizations = AppLocalizations.of(context)!;
               final path = await ExportService.exportToExcel(
                 budgetProvider.items,
               );
               if (!mounted) return;
               if (path != null) {
                 messenger.showSnackBar(
-                  SnackBar(content: Text('Exported to $path')),
+                  SnackBar(content: Text(localizations.exportSuccess(path))),
                 );
               }
             },
-            tooltip: 'Export to Excel',
+            tooltip: AppLocalizations.of(context)!.exportTooltip,
           ),
           Consumer<ThemeProvider>(
             builder: (context, themeProvider, child) {
@@ -96,8 +99,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   themeProvider.toggleTheme(themeProvider.themeMode != ThemeMode.dark);
                 },
                 tooltip: themeProvider.themeMode == ThemeMode.dark
-                  ? 'Switch to Light Mode'
-                  : 'Switch to Dark Mode',
+                  ? AppLocalizations.of(context)!.switchToLightMode
+                  : AppLocalizations.of(context)!.switchToDarkMode,
               );
             },
           ),
@@ -111,7 +114,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               );
             },
-            tooltip: 'Change Year',
+            tooltip: AppLocalizations.of(context)!.changeYearTooltip,
           ),
           IconButton(
             icon: const Icon(Icons.receipt_long_outlined),
@@ -123,7 +126,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               );
             },
-            tooltip: 'View Reports',
+            tooltip: AppLocalizations.of(context)!.viewReportsTooltip,
           ),
         ],
       ),
@@ -154,7 +157,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     SizedBox(height: 16),
                     Text(
-                      'No items found for ${yearProvider.currentYear ?? DateTime.now().year}',
+                      AppLocalizations.of(context)!.noItemsFound(yearProvider.currentYear ?? DateTime.now().year),
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
@@ -162,7 +165,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      'Try adding items or adjusting your search',
+                      AppLocalizations.of(context)!.tryAddingItems,
                       style: TextStyle(
                         color: Colors.grey,
                       ),
@@ -194,7 +197,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           );
         },
         icon: const Icon(Icons.add),
-        label: const Text('Add Item'),
+        label: Text(AppLocalizations.of(context)!.addItem),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );

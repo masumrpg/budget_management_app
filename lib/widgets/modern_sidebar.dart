@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:budget_management_app/l10n/app_localizations.dart';
 
 class ModernSidebar extends StatefulWidget {
   final int selectedIndex;
@@ -22,17 +23,17 @@ class _ModernSidebarState extends State<ModernSidebar> {
     final List<Map<String, dynamic>> menuItems = [
       {
         'icon': Icons.home_outlined,
-        'label': 'Dashboard',
+        'label': AppLocalizations.of(context)!.dashboard,
         'index': 0,
       },
       {
         'icon': Icons.table_chart_outlined,
-        'label': 'Budget Management',
+        'label': AppLocalizations.of(context)!.appTitle,
         'index': 1,
       },
       {
         'icon': Icons.bar_chart_outlined,
-        'label': 'Reports',
+        'label': AppLocalizations.of(context)!.reports,
         'index': 2,
       },
     ];
@@ -64,9 +65,9 @@ class _ModernSidebarState extends State<ModernSidebar> {
                   if (widget.isExpanded)
                     const SizedBox(width: 12),
                   if (widget.isExpanded)
-                    const Text(
-                      'Budget App',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.budgetApp,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -75,7 +76,7 @@ class _ModernSidebarState extends State<ModernSidebar> {
               ),
             ),
             const Divider(),
-            
+
             // Menu Items
             Expanded(
               child: ListView.builder(

@@ -1,4 +1,6 @@
 import 'package:budget_management_app/providers/budget_provider.dart';
+import 'package:budget_management_app/l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:budget_management_app/providers/theme_provider.dart';
 import 'package:budget_management_app/providers/year_provider.dart';
 import 'package:budget_management_app/screens/main_layout_screen.dart';
@@ -44,11 +46,22 @@ class MyApp extends StatelessWidget {
           return Consumer<ThemeProvider>(
             builder: (context, themeProvider, child) {
               return MaterialApp(
-                title: 'Budget Management App',
+                onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
                 themeMode: themeProvider.themeMode,
                 theme: AppTheme.lightTheme,
                 darkTheme: AppTheme.darkTheme,
                 home: initialScreen,
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: const [
+                  Locale('id'), // Force Indonesian first as requested
+                  Locale('en'),
+                ],
+                locale: const Locale('id'), // Explicitly set to Indonesian
               );
             },
           );

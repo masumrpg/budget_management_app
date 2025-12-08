@@ -13,7 +13,7 @@ class MainLayoutScreen extends StatefulWidget {
 
 class _MainLayoutScreenState extends State<MainLayoutScreen> {
   int _selectedIndex = 0;
-  bool _isSidebarExpanded = true;
+  final bool _isSidebarExpanded = true;
 
   @override
   Widget build(BuildContext context) {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:budget_management_app/l10n/app_localizations.dart';
 
 class EditItemDialog extends StatefulWidget {
   final BudgetItem item;
@@ -51,8 +52,8 @@ class EditItemDialogState extends State<EditItemDialog> {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Edit Budget Item',
+          Text(
+            AppLocalizations.of(context)!.editBudgetItem,
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
@@ -60,7 +61,7 @@ class EditItemDialogState extends State<EditItemDialog> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Update the item details below',
+            AppLocalizations.of(context)!.updateItemDetails,
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontSize: 14,
@@ -80,8 +81,8 @@ class EditItemDialogState extends State<EditItemDialog> {
                 TextFormField(
                   controller: _itemNameController,
                   decoration: InputDecoration(
-                    labelText: 'Item Name',
-                    hintText: 'Enter item name...',
+                    labelText: AppLocalizations.of(context)!.itemName,
+                    hintText: AppLocalizations.of(context)!.enterItemName,
                     border: const OutlineInputBorder(),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -90,7 +91,7 @@ class EditItemDialogState extends State<EditItemDialog> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter an item name';
+                      return AppLocalizations.of(context)!.pleaseEnterItemName;
                     }
                     return null;
                   },
@@ -99,8 +100,8 @@ class EditItemDialogState extends State<EditItemDialog> {
                 TextFormField(
                   controller: _picNameController,
                   decoration: InputDecoration(
-                    labelText: 'Person in Charge (PIC)',
-                    hintText: 'Enter PIC name...',
+                    labelText: AppLocalizations.of(context)!.picLabel,
+                    hintText: AppLocalizations.of(context)!.enterPicName,
                     border: const OutlineInputBorder(),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -109,7 +110,7 @@ class EditItemDialogState extends State<EditItemDialog> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a PIC name';
+                      return AppLocalizations.of(context)!.pleaseEnterPicName;
                     }
                     return null;
                   },
@@ -118,8 +119,8 @@ class EditItemDialogState extends State<EditItemDialog> {
                 TextFormField(
                   controller: _yearlyBudgetController,
                   decoration: InputDecoration(
-                    labelText: 'Yearly Budget',
-                    hintText: 'Enter amount...',
+                    labelText: AppLocalizations.of(context)!.yearlyBudgetLabel,
+                    hintText: AppLocalizations.of(context)!.enterAmountHint,
                     prefixText: 'Rp ',
                     border: const OutlineInputBorder(),
                     contentPadding: const EdgeInsets.symmetric(
@@ -131,12 +132,12 @@ class EditItemDialogState extends State<EditItemDialog> {
                   inputFormatters: [ThousandsFormatter(), FilteringTextInputFormatter.digitsOnly],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a yearly budget';
+                      return AppLocalizations.of(context)!.pleaseEnterPlannedAmount;
                     }
                     // Remove formatting characters before validation
                     final cleanValue = value.replaceAll('.', '');
                     if (double.tryParse(cleanValue) == null) {
-                      return 'Please enter a valid number';
+                      return AppLocalizations.of(context)!.pleaseEnterValidNumber;
                     }
 
                     final budget = double.parse(cleanValue);
@@ -145,7 +146,7 @@ class EditItemDialogState extends State<EditItemDialog> {
                     // Check if the budget is less than the total used amount
                     if (budget < widget.item.totalUsed) {
                       final formattedUsed = formatter.format(widget.item.totalUsed).replaceAll(',', '.');
-                      return 'Yearly budget cannot be less than total used amount (Rp $formattedUsed)';
+                      return AppLocalizations.of(context)!.budgetLessThanUsed('Rp $formattedUsed');
                     }
                     return null;
                   },
@@ -158,11 +159,11 @@ class EditItemDialogState extends State<EditItemDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         FilledButton(
           onPressed: _updateItem,
-          child: const Text('Update Item'),
+          child: Text(AppLocalizations.of(context)!.updateItem),
         ),
       ],
     );

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:budget_management_app/l10n/app_localizations.dart';
 
 class UpdateAmountDialog extends StatefulWidget {
   final BudgetItem item;
@@ -23,10 +24,22 @@ class UpdateAmountDialog extends StatefulWidget {
 class UpdateAmountDialogState extends State<UpdateAmountDialog> {
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
-  final _monthNames = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-  ];
+  List<String> _getMonthNames(BuildContext context) {
+    return [
+      AppLocalizations.of(context)!.january,
+      AppLocalizations.of(context)!.february,
+      AppLocalizations.of(context)!.march,
+      AppLocalizations.of(context)!.april,
+      AppLocalizations.of(context)!.may,
+      AppLocalizations.of(context)!.june,
+      AppLocalizations.of(context)!.july,
+      AppLocalizations.of(context)!.august,
+      AppLocalizations.of(context)!.september,
+      AppLocalizations.of(context)!.october,
+      AppLocalizations.of(context)!.november,
+      AppLocalizations.of(context)!.december,
+    ];
+  }
   String _formattedRemaining = '';
 
   @override
@@ -78,12 +91,12 @@ class UpdateAmountDialogState extends State<UpdateAmountDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Update Amount for ${widget.item.itemName}',
+            AppLocalizations.of(context)!.updateAmountFor(widget.item.itemName),
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 4),
           Text(
-            'Month: ${_monthNames[widget.monthIndex]}',
+            AppLocalizations.of(context)!.monthLabel(_getMonthNames(context)[widget.monthIndex]),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
@@ -108,7 +121,7 @@ class UpdateAmountDialogState extends State<UpdateAmountDialog> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Remaining Budget',
+                      AppLocalizations.of(context)!.remainingBudget,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
@@ -128,8 +141,8 @@ class UpdateAmountDialogState extends State<UpdateAmountDialog> {
               TextFormField(
                 controller: _amountController,
                 decoration: InputDecoration(
-                  labelText: 'Amount',
-                  hintText: 'Enter amount...',
+                  labelText: AppLocalizations.of(context)!.amountLabel,
+                  hintText: AppLocalizations.of(context)!.enterAmountHint,
                   prefixText: 'Rp ',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -149,18 +162,18 @@ class UpdateAmountDialogState extends State<UpdateAmountDialog> {
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter an amount';
+                    return AppLocalizations.of(context)!.pleaseEnterAmount;
                   }
                   // Remove formatting characters before validation
                   final cleanValue = value.replaceAll('.', '');
                   if (double.tryParse(cleanValue) == null) {
-                    return 'Please enter a valid number';
+                    return AppLocalizations.of(context)!.pleaseEnterValidNumber;
                   }
 
                   final inputAmount = double.parse(cleanValue);
                   final newRemaining = widget.item.yearlyBudget - (widget.item.totalUsed + (inputAmount - (widget.item.monthlyWithdrawals[widget.monthIndex] ?? 0)));
                   if (newRemaining < 0) {
-                    return 'Amount exceeds remaining budget';
+                    return AppLocalizations.of(context)!.amountExceedsRemaining;
                   }
                   return null;
                 },
@@ -172,11 +185,11 @@ class UpdateAmountDialogState extends State<UpdateAmountDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         FilledButton(
           onPressed: _updateAmount,
-          child: const Text('Save'),
+          child: Text(AppLocalizations.of(context)!.save),
         ),
       ],
     );
