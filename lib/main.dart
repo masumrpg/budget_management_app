@@ -106,6 +106,7 @@ class MyApp extends StatelessWidget {
           return Consumer<ThemeProvider>(
             builder: (context, themeProvider, child) {
               return MaterialApp(
+                scaffoldMessengerKey: NotificationService.messengerKey,
                 onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
                 themeMode: themeProvider.themeMode,
                 theme: AppTheme.lightTheme,

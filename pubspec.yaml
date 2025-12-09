@@ -1,7 +1,7 @@
 name: budget_management_app
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.1.4
+version: 0.1.5
 
 environment:
   sdk: ^3.10.1
@@ -13,7 +13,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_local_notifications: ^19.5.0
+
   flutter_staggered_animations: ^1.1.1
   google_fonts: ^6.3.2
   hive: ^2.2.3
