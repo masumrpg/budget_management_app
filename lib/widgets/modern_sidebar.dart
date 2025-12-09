@@ -40,14 +40,13 @@ class _ModernSidebarState extends State<ModernSidebar> {
 
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 5,
-            offset: const Offset(2, 0),
+        color: Theme.of(context).scaffoldBackgroundColor,
+        border: Border(
+          right: BorderSide(
+            color: Theme.of(context).dividerColor.withValues(alpha: 0.5),
+            width: 1,
           ),
-        ],
+        ),
       ),
       width: widget.isExpanded ? 250 : 80,
       child: SafeArea(

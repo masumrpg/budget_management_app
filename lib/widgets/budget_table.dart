@@ -14,17 +14,9 @@ class BudgetTable extends StatelessWidget {
   const BudgetTable({super.key, required this.budgetItems});
 
   String _formatAmount(double amount) {
-    if (amount >= 1000000000) { // 1 miliar
-      return 'Rp ${(amount / 1000000000).toStringAsFixed(1)} M';
-    } else if (amount >= 1000000) { // 1 juta
-      return 'Rp ${(amount / 1000000).toStringAsFixed(1)} Jt';
-    } else if (amount >= 1000) {
-      // 1 ribu
-      return 'Rp ${(amount / 1000).toStringAsFixed(0)} Rb';
-    } else {
-      final formatter = NumberFormat('#,##0', 'id_ID');
-      return 'Rp ${formatter.format(amount)}';
-    }
+    if (amount == 0) return '-';
+    final formatter = NumberFormat('#,##0', 'id_ID');
+    return 'Rp ${formatter.format(amount)}';
   }
 
   @override
@@ -37,12 +29,12 @@ class BudgetTable extends StatelessWidget {
       child: DataTable2(
         columnSpacing: 16,
         horizontalMargin: 16,
-        minWidth: 2200,
+        minWidth: 2500,
         fixedLeftColumns: 2,
         headingRowHeight: 56,
         dataRowHeight: 64,
         headingRowColor: WidgetStateProperty.all(
-          Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
+          Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.5),
         ),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
@@ -51,36 +43,43 @@ class BudgetTable extends StatelessWidget {
         ),
         columns: [
           DataColumn2(
-            label: Text(
-              AppLocalizations.of(context)!.itemName,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
+            label: Center(
+              child: Text(
+                AppLocalizations.of(context)!.itemName,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
             ),
             size: ColumnSize.L,
             fixedWidth: 200,
           ),
           DataColumn2(
-            label: Text(
-              AppLocalizations.of(context)!.picName,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
+            label: Center(
+              child: Text(
+                AppLocalizations.of(context)!.picName,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
             ),
             fixedWidth: 150,
           ),
           DataColumn2(
-            label: Text(
-              AppLocalizations.of(context)!.pagu,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
+            label: Center(
+              child: Text(
+                AppLocalizations.of(context)!.pagu,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
             ),
             numeric: true,
-            fixedWidth: 140,
+            fixedWidth: 200,
           ),
           ...List.generate(
             12,
@@ -109,22 +108,28 @@ class BudgetTable extends StatelessWidget {
             ),
           ),
           DataColumn2(
-            label: Text(
-              AppLocalizations.of(context)!.sisa,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
+            label: Center(
+              child: Text(
+                AppLocalizations.of(context)!.sisa,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
             ),
             numeric: true,
-            fixedWidth: 140,
+            fixedWidth: 200,
           ),
           DataColumn2(
-            label: Text(
-              AppLocalizations.of(context)!.actions,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
+            label: Center(
+              child: Text(
+                AppLocalizations.of(context)!.actions,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
             ),
             fixedWidth: 100,
