@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:budget_management_app/models/budget_item.dart';
 import 'package:excel/excel.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
+// import 'package:path_provider/path_provider.dart'; // No longer needed for export_service
 
 class ExportService {
   static Future<String?> exportToExcel(List<BudgetItem> items) async {
@@ -38,14 +39,27 @@ class ExportService {
       sheet.cell(CellIndex.indexByColumnRow(columnIndex: 16, rowIndex: rowIndex)).value = DoubleCellValue(item.remaining);
     }
 
-    final directory = await getApplicationDocumentsDirectory();
-    final path = '${directory.path}/budget_export_${DateTime.now().millisecondsSinceEpoch}.xlsx';
-    final fileBytes = excel.encode();
-    if (fileBytes != null) {
-      File(path)
-        ..createSync(recursive: true)
-        ..writeAsBytesSync(fileBytes);
-      return path;
+    // Use FilePicker to let user choose the save location
+    String? outputFile = await FilePicker.platform.saveFile(
+      dialogTitle: 'Please select an output file:',
+      fileName: 'budget_export_${DateTime.now().millisecondsSinceEpoch}.xlsx',
+      type: FileType.custom,
+      allowedExtensions: ['xlsx'],
+    );
+
+    if (outputFile != null) {
+      // Ensure the user selected a file ending with .xlsx
+      if (!outputFile.endsWith('.xlsx')) {
+        outputFile = '$outputFile.xlsx';
+      }
+
+      final fileBytes = excel.encode();
+      if (fileBytes != null) {
+        File(outputFile)
+          ..createSync(recursive: true)
+          ..writeAsBytesSync(fileBytes);
+        return outputFile;
+      }
     }
     return null;
   }

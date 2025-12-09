@@ -11,10 +11,25 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'models/budget_item.dart';
+import 'dart:io' show Platform, File, Directory;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
+
+  if (Platform.isWindows) {
+    // On Windows, store data in the executable's directory (Portable mode)
+    final executableDir = File(Platform.resolvedExecutable).parent;
+    final logPath = '${executableDir.path}\\data';
+
+    // Ensure the directory exists
+    Directory(logPath).createSync(recursive: true);
+
+    Hive.init(logPath);
+  } else {
+    // Default initialization for other platforms
+    await Hive.initFlutter();
+  }
+
   Hive.registerAdapter(BudgetItemAdapter());
   await Hive.openBox<BudgetItem>('budgetBox');
   await Hive.openBox('settings'); // Open settings box for year storage
