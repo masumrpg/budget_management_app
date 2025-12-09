@@ -100,11 +100,18 @@ jobs:
           Compress-Archive -Path dist\budget_management_app_setup.exe -DestinationPath windows.zip
         shell: pwsh
 
-      - name: Upload Windows artifact
+      - name: Compress Portable Windows Build
+        run: |
+          Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath windows_portable.zip
+        shell: pwsh
+
+      - name: Upload Windows artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: windows-zip
-          path: windows.zip
+          name: windows-artifacts
+          path: |
+            windows.zip
+            windows_portable.zip
           if-no-files-found: error
 
   release:
