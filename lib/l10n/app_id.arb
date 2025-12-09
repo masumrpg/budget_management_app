@@ -86,6 +86,7 @@
   "input": "Input",
   "confirmDelete": "Konfirmasi Hapus",
   "deleteConfirmationMessage": "Apakah Anda yakin ingin menghapus \"{itemName}\"?",
+  "budgetExhausted": "Habis",
   "addNewBudgetItem": "Tambah Item Anggaran Baru",
   "fillInDetails": "Isi detail di bawah ini",
   "enterItemName": "Masukkan nama item...",

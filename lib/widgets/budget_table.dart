@@ -43,7 +43,8 @@ class BudgetTable extends StatelessWidget {
         ),
         columns: [
           DataColumn2(
-            label: Center(
+            label: Align(
+              alignment: Alignment.centerLeft,
               child: Text(
                 AppLocalizations.of(context)!.itemName,
                 style: TextStyle(
@@ -56,7 +57,8 @@ class BudgetTable extends StatelessWidget {
             fixedWidth: 200,
           ),
           DataColumn2(
-            label: Center(
+            label: Align(
+              alignment: Alignment.centerLeft,
               child: Text(
                 AppLocalizations.of(context)!.picName,
                 style: TextStyle(
@@ -68,64 +70,70 @@ class BudgetTable extends StatelessWidget {
             fixedWidth: 150,
           ),
           DataColumn2(
-            label: Center(
+            label: Align(
+              alignment: Alignment.centerLeft,
               child: Text(
                 AppLocalizations.of(context)!.pagu,
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ),
-            numeric: true,
+            numeric: false,
             fixedWidth: 200,
           ),
           ...List.generate(
             12,
             (index) => DataColumn2(
-              label: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  _getMonthName(context, index),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
+              label: Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    _getMonthName(context, index),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                 ),
               ),
-              numeric: true,
+              numeric: false,
               fixedWidth: 110,
             ),
           ),
           DataColumn2(
-            label: Center(
+            label: Align(
+              alignment: Alignment.centerLeft,
               child: Text(
                 AppLocalizations.of(context)!.sisa,
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ),
-            numeric: true,
+            numeric: false,
             fixedWidth: 200,
           ),
           DataColumn2(
-            label: Center(
+            label: Align(
+              alignment: Alignment.centerLeft,
               child: Text(
                 AppLocalizations.of(context)!.actions,
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.primary,
@@ -195,7 +203,10 @@ class BudgetTable extends StatelessWidget {
               ),
               ...List.generate(12, (monthIndex) {
                 return DataCell(
-                  Center(child: _buildMonthCell(context, item, monthIndex)),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: _buildMonthCell(context, item, monthIndex),
+                  ),
                   onTap: () {
                     if (item.activeMonths.contains(monthIndex)) {
                       showDialog(
@@ -243,27 +254,38 @@ class BudgetTable extends StatelessWidget {
   }
 
   Widget _buildRemainingCell(BuildContext context, BudgetItem item) {
+    // Check if remaining is effectively 0 (handling floating point precision)
+    final bool isExhausted = item.remaining.abs() < 1;
+
+    // Calculate percentage as before
     final double percentage = item.yearlyBudget > 0
         ? (item.remaining / item.yearlyBudget).clamp(0.0, 1.0)
         : 0.0;
 
-    final Color color = item.remaining < 0
+    final Color color = (item.remaining < 0 || isExhausted)
         ? Theme.of(context).colorScheme.error
         : percentColors(percentage);
 
+    String displayText;
+    if (isExhausted && item.yearlyBudget > 0) {
+      displayText = AppLocalizations.of(context)!.budgetExhausted;
+    } else {
+      displayText = _formatAmount(item.remaining);
+    }
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          _formatAmount(item.remaining),
+          displayText,
           style: TextStyle(
             fontWeight: FontWeight.w700,
             color: color,
             fontSize: 13,
           ),
         ),
-        if (item.yearlyBudget > 0 && item.remaining >= 0) ...[
+        if (item.yearlyBudget > 0 && item.remaining >= 1) ...[ // Don't show progress bar if exhausted
           const SizedBox(height: 4),
           SizedBox(
             width: 80,
@@ -324,7 +346,7 @@ class BudgetTable extends StatelessWidget {
             fontWeight: FontWeight.w600,
             color: Theme.of(context).colorScheme.onPrimaryContainer,
           ),
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.left,
         ),
       );
     }

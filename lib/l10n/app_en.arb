@@ -86,6 +86,7 @@
   "input": "Input",
   "confirmDelete": "Confirm Delete",
   "deleteConfirmationMessage": "Are you sure you want to delete \"{itemName}\"?",
+  "budgetExhausted": "Exhausted",
   "addNewBudgetItem": "Add New Budget Item",
   "fillInDetails": "Fill in the details below",
   "enterItemName": "Enter item name...",

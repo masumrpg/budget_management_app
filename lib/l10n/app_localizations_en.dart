@@ -273,6 +273,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get budgetExhausted => 'Exhausted';
+
+  @override
   String get addNewBudgetItem => 'Add New Budget Item';
 
   @override

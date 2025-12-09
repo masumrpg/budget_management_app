@@ -596,6 +596,12 @@ abstract class AppLocalizations {
   /// **'Are you sure you want to delete \"{itemName}\"?'**
   String deleteConfirmationMessage(Object itemName);
 
+  /// No description provided for @budgetExhausted.
+  ///
+  /// In en, this message translates to:
+  /// **'Exhausted'**
+  String get budgetExhausted;
+
   /// No description provided for @addNewBudgetItem.
   ///
   /// In en, this message translates to:

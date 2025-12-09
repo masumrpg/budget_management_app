@@ -275,6 +275,9 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String get budgetExhausted => 'Habis';
+
+  @override
   String get addNewBudgetItem => 'Tambah Item Anggaran Baru';
 
   @override
