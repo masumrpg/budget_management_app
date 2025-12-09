@@ -1,0 +1,14 @@
+flutter_native_splash:
+  color: "#ffffff"
+  image: "assets/image/logo.png"
+
+  android: true
+  ios: true
+  web: false
+
+  # Windows, Linux, MacOS support is limited or different for native splash in some versions,
+  # but checking if latest supports it.
+  # Usually flutter_native_splash mainly targets mobile.
+  # For Desktop, Flutter doesn't have a standardized "native splash" via this package universally same way.
+  # But let's check recent updates.
+  # Current version might support it via platform specific files modification.
