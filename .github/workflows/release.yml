@@ -85,6 +85,13 @@ jobs:
           VERSION=$(grep 'version:' pubspec.yaml | sed 's/version: //; s/+.*//')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
+      - name: Copy VC++ Redistributables
+        run: |
+          Copy-Item "C:\Windows\System32\msvcp140.dll" build\windows\x64\runner\Release\
+          Copy-Item "C:\Windows\System32\vcruntime140.dll" build\windows\x64\runner\Release\
+          Copy-Item "C:\Windows\System32\vcruntime140_1.dll" build\windows\x64\runner\Release\
+        shell: pwsh
+
       - name: Setup Inno Setup
         run: |
           choco install innosetup -y
