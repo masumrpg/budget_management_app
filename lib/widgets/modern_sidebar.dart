@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:budget_management_app/l10n/app_localizations.dart';
+import 'package:budget_management_app/widgets/navigation_menu.dart';
 
 class ModernSidebar extends StatefulWidget {
   final int selectedIndex;
@@ -20,23 +21,7 @@ class ModernSidebar extends StatefulWidget {
 class _ModernSidebarState extends State<ModernSidebar> {
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> menuItems = [
-      {
-        'icon': Icons.home_outlined,
-        'label': AppLocalizations.of(context)!.dashboard,
-        'index': 0,
-      },
-      {
-        'icon': Icons.table_chart_outlined,
-        'label': AppLocalizations.of(context)!.appTitle,
-        'index': 1,
-      },
-      {
-        'icon': Icons.bar_chart_outlined,
-        'label': AppLocalizations.of(context)!.reports,
-        'index': 2,
-      },
-    ];
+    final menuItems = NavigationMenuItems.getMenuItems(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -80,39 +65,14 @@ class _ModernSidebarState extends State<ModernSidebar> {
                 itemCount: menuItems.length,
                 itemBuilder: (context, index) {
                   final item = menuItems[index];
-                  final bool isSelected = widget.selectedIndex == item['index'];
+                  final bool isSelected = widget.selectedIndex == item.index;
 
-                  return Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: isSelected
-                          ? Theme.of(context).colorScheme.primaryContainer
-                          : Colors.transparent,
-                    ),
-                    child: ListTile(
-                      leading: Icon(
-                        item['icon'],
-                        color: isSelected
-                            ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                      title: widget.isExpanded
-                          ? Text(
-                              item['label'],
-                              style: TextStyle(
-                                color: isSelected
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context).colorScheme.onSurfaceVariant,
-                              ),
-                            )
-                          : null,
-                      selected: isSelected,
-                      onTap: () => widget.onItemPressed(item['index'] as int),
-                    ),
+                  return NavigationMenuItems.buildNavigationItem(
+                    context: context,
+                    item: item,
+                    isSelected: isSelected,
+                    onTap: () => widget.onItemPressed(item.index),
+                    showLabel: widget.isExpanded,
                   );
                 },
               ),
