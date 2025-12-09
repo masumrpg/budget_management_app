@@ -57,9 +57,7 @@ class _ModernSidebarState extends State<ModernSidebar> {
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.account_balance_wallet_outlined,
-                    color: Theme.of(context).colorScheme.primary,
+                  Image.asset('assets/image/logo.png', height: 32, width: 32,
                   ),
                   if (widget.isExpanded)
                     const SizedBox(width: 12),
